@@ -7,29 +7,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/recruiter")
+@RequestMapping("/api/v1/admin")
 @RequiredArgsConstructor
-public class RecruitController {
+public class AdminController {
 
     private final UserService userService;
 
-    /**
-     * This method is used to get recruiter details
-     *
-     * @return
-     */
     @RequestMapping(value = "/details", method = RequestMethod.GET)
-    public UserResponse getRecruiterDetails() {
+    public UserResponse getAdminDetails() {
         return userService.getUserDetails();
     }
 
     @RequestMapping(value = "/updateDetails/{username}", method = RequestMethod.PUT)
-    public UserResponse updateRecruiterDetails(@PathVariable("username") String username, @RequestBody UserRequest request) {
+    public UserResponse updateAdminDetails(@PathVariable("username") String username, @RequestBody UserRequest request) {
         return userService.updateUserDetails(username, request);
     }
 
     @RequestMapping(value = "/updatePassword/{username}", method = RequestMethod.PUT)
-    public UserResponse updateRecruiterPassword(@PathVariable("username") String username, @RequestBody UserRequest request) {
+    public UserResponse updateAdminPassword(@PathVariable("username") String username, @RequestBody UserRequest request) {
         return userService.updatePassword(username, request.getPassword());
     }
 }

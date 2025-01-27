@@ -1,11 +1,10 @@
 package com.example.user_service.controller;
 
+import com.example.user_service.dto.request.UserRequest;
 import com.example.user_service.dto.response.UserResponse;
 import com.example.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -24,5 +23,13 @@ public class UserController {
         return userService.getUserDetails();
     }
 
+    @RequestMapping(value = "/updateDetails/{username}", method = RequestMethod.PUT)
+    public UserResponse updateUserDetails(@PathVariable("username") String username, @RequestBody UserRequest userRequest) {
+        return userService.updateUserDetails(username, userRequest);
+    }
 
+    @RequestMapping(value = "/updatePassword/{username}", method = RequestMethod.PUT)
+    public UserResponse updateUserPassword(@PathVariable("username") String username, @RequestBody UserRequest userRequest) {
+        return userService.updatePassword(username, userRequest.getPassword());
+    }
 }
