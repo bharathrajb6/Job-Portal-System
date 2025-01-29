@@ -3,9 +3,7 @@ package com.example.user_service.service.impl;
 import com.example.user_service.dto.request.UserRequest;
 import com.example.user_service.exception.UserException;
 import com.example.user_service.mapper.UserMapper;
-import com.example.user_service.model.Token;
 import com.example.user_service.model.User;
-import com.example.user_service.repo.TokenRepository;
 import com.example.user_service.repo.UserRepository;
 import com.example.user_service.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.UUID;
+import static com.example.user_service.messages.UserExceptionMessages.*;
+import static com.example.user_service.messages.UserLogMessages.*;
+import static com.example.user_service.validation.UserValidation.validateUserRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -28,9 +27,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenRepository tokenRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final TokenServiceImpl tokenService;
 
     /**
      * This method is used to register the user
@@ -38,19 +37,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @param request
      * @return
      */
+    @Transactional
     @Override
     public String register(UserRequest request) {
-
+        validateUserRequest(request);
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-
         try {
             userRepository.save(user);
+            log.info(String.format(LOG_USER_REGISTRATION_SUCCESS, request.getUsername()));
         } catch (Exception exception) {
-            System.out.println(exception.getMessage());
+            log.error(String.format(LOG_USER_REGISTRATION_FAILED, request.getUsername(), exception.getMessage()));
+            throw new UserException(exception.getMessage());
         }
         String jwtToken = jwtService.generateToken(user);
-        saveUserToken(jwtToken, user);
+        tokenService.saveUserToken(jwtToken, user);
         return jwtToken;
     }
 
@@ -62,78 +63,50 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     public String login(UserRequest request) {
-        Authentication authentication;
+        String username = request.getUsername();
+        String password = request.getPassword();
+
+        validateLoginCredentials(username, password);
+
         try {
             // Authenticate the user with username and password
-            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (Exception exception) {
             // If login credentials are wrong, then throw the exception
-            authentication = null;
-            log.error("USER_DATA_NOT_FOUND", request.getUsername());
-            throw new UserException(String.format("USER_NOT_FOUND", request.getUsername()));
+            log.error(String.format(LOG_USER_DATA_NOT_FOUND, username));
+            throw new UserException(String.format(USER_DATA_NOT_FOUND, username));
         }
+
         // Fetch the user details
-        User user = userRepository.findByUsername(request.getUsername()).orElse(null);
-        if (user != null && authentication != null) {
-            // Generate a new token
-            String jwtToken = jwtService.generateToken(user);
-            // Delete all the existing token which is generated for this user
-            revokeAllTokensForUser(user.getUsername());
-            // Save the new token
-            saveUserToken(jwtToken, user);
-            return jwtToken;
-        } else {
-            return null;
-        }
+        User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> {
+            log.error(String.format(LOG_USER_DATA_NOT_FOUND, username));
+            return new UserException(String.format(USER_DATA_NOT_FOUND, username));
+        });
+
+        // Generate a new token
+        String jwtToken = jwtService.generateToken(user);
+        // Delete all the existing token which is generated for this user
+        tokenService.revokeAllTokensForUser(username);
+        // Save the new token
+        tokenService.saveUserToken(jwtToken, user);
+        return jwtToken;
     }
 
     /**
-     * This method is used to log out the user
-     *
-     * @param jwt_token
-     * @param user
-     */
-    @Transactional
-    private void saveUserToken(String jwt_token, User user) {
-
-        Token token = new Token();
-        token.setTokenID(String.valueOf(UUID.randomUUID()));
-        token.setJwtToken(jwt_token);
-        token.setUser(user);
-        token.setLoggedOut(false);
-
-        try {
-            // Save the new token
-            tokenRepository.save(token);
-            log.info("JWT_TOKEN_FOR_USER_SAVED_SUCCESS");
-        } catch (Exception exception) {
-            // If any issue come, then throw the exception
-            log.error(String.format("UNABLE_TO_SAVE_JWT_TOKEN_TO_DB", exception.getMessage()));
-            throw new UserException(String.format("UNABLE_TO_SAVE_JWT_TOKEN", exception.getMessage()));
-        }
-    }
-
-    /**
-     * This method is used to revoke all the tokens for the user
+     * This method is used to validate the login credentials
      *
      * @param username
+     * @param password
      */
-    @Transactional
-    private void revokeAllTokensForUser(String username) {
-        // Fetch all the tokens for this username
-        List<Token> tokenList = tokenRepository.findAllTokens(username);
-        if (!tokenList.isEmpty()) {
-            tokenList.forEach(t -> t.setLoggedOut(true));
+    private void validateLoginCredentials(String username, String password) {
+
+        if (username == null || username.isBlank() || username.isEmpty()) {
+            throw new UserException(INVALID_USERNAME);
         }
-        try {
-            // Delete all the tokens from database
-            tokenRepository.deleteAll(tokenList);
-            log.info("JWT_TOKEN_FOR_USER_DELETED_SUCCESS");
-        } catch (Exception exception) {
-            // If any issue come, then throw the exception
-            String message = String.format("UNABLE_TO_DELETE_ALL_OLD_TOKENS", username, exception.getMessage());
-            log.error(message);
-            throw new UserException(message);
+
+        if (password == null || password.isBlank() || password.isEmpty()) {
+            throw new UserException(INVALID_PASSWORD);
         }
     }
+
 }

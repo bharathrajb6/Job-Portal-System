@@ -23,11 +23,25 @@ public class RecruitController {
         return userService.getUserDetails();
     }
 
+    /**
+     * This method is used to update recruiter details
+     *
+     * @param username
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/updateDetails/{username}", method = RequestMethod.PUT)
     public UserResponse updateRecruiterDetails(@PathVariable("username") String username, @RequestBody UserRequest request) {
         return userService.updateUserDetails(username, request);
     }
 
+    /**
+     * This method is used to update recruiter password
+     *
+     * @param username
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/updatePassword/{username}", method = RequestMethod.PUT)
     public UserResponse updateRecruiterPassword(@PathVariable("username") String username, @RequestBody UserRequest request) {
         return userService.updatePassword(username, request.getPassword());

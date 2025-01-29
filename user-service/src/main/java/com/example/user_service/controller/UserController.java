@@ -23,11 +23,25 @@ public class UserController {
         return userService.getUserDetails();
     }
 
+    /**
+     * This method is used to update user details
+     *
+     * @param username
+     * @param userRequest
+     * @return
+     */
     @RequestMapping(value = "/updateDetails/{username}", method = RequestMethod.PUT)
     public UserResponse updateUserDetails(@PathVariable("username") String username, @RequestBody UserRequest userRequest) {
         return userService.updateUserDetails(username, userRequest);
     }
 
+    /**
+     * This method is used to update user password
+     *
+     * @param username
+     * @param userRequest
+     * @return
+     */
     @RequestMapping(value = "/updatePassword/{username}", method = RequestMethod.PUT)
     public UserResponse updateUserPassword(@PathVariable("username") String username, @RequestBody UserRequest userRequest) {
         return userService.updatePassword(username, userRequest.getPassword());
