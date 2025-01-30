@@ -3,9 +3,11 @@ package com.example.user_service.service.impl;
 import com.example.user_service.dto.request.UserRequest;
 import com.example.user_service.exception.UserException;
 import com.example.user_service.mapper.UserMapper;
+import com.example.user_service.model.AccountStatus;
 import com.example.user_service.model.User;
 import com.example.user_service.repo.UserRepository;
 import com.example.user_service.service.AuthenticationService;
+import com.example.user_service.validation.UserValidation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.user_service.messages.UserExceptionMessages.*;
 import static com.example.user_service.messages.UserLogMessages.*;
-import static com.example.user_service.validation.UserValidation.validateUserRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final TokenServiceImpl tokenService;
+    private final UserValidation userValidation;
 
     /**
      * This method is used to register the user
@@ -40,9 +42,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     @Override
     public String register(UserRequest request) {
-        validateUserRequest(request);
+        userValidation.validateUserRequest(request);
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setAccountStatus(AccountStatus.ACTIVE);
         try {
             userRepository.save(user);
             log.info(String.format(LOG_USER_REGISTRATION_SUCCESS, request.getUsername()));

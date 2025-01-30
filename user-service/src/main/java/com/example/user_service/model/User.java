@@ -2,10 +2,13 @@ package com.example.user_service.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,6 +46,30 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Token> tokens;
+
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "fresher", nullable = false)
+    private Boolean fresher;
+
+    @Column(name = "company_name")
+    private String companyName;
+
+    @Column(name = "company_website")
+    private String companyWebsite;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private Timestamp createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", updatable = false)
+    private Timestamp updatedAt;
+
+    @Column(name = "account_status")
+    @Enumerated(value = EnumType.STRING)
+    private AccountStatus accountStatus;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

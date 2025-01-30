@@ -7,6 +7,7 @@ import com.example.user_service.mapper.UserMapper;
 import com.example.user_service.model.User;
 import com.example.user_service.repo.UserRepository;
 import com.example.user_service.service.UserService;
+import com.example.user_service.validation.UserValidation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final UserValidation userValidation;
 
     /**
      * This method is used to get the username of the current user
@@ -60,12 +62,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserResponse updateUserDetails(String username, UserRequest request) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> {
-            log.error(String.format(LOG_USER_DATA_NOT_FOUND, username));
-            return new UserException(String.format(USER_DATA_NOT_FOUND, username));
-        });
-        User updatedUser = updateUserDataFromRequest(user, request);
-
+        userValidation.validateUserRequest(request);
+        User updatedUser = updateUserDataFromRequest(username, request);
         try {
             userRepository.updateUserDetails(updatedUser.getFirstName(), updatedUser.getLastName(), updatedUser.getEmail(), updatedUser.getContactNumber(), username);
             log.info(String.format(LOG_USER_DETAILS_UPDATE_SUCCESS, username));
@@ -103,15 +101,22 @@ public class UserServiceImpl implements UserService {
     /**
      * This method is used to update the user data from the request
      *
-     * @param user
+     * @param username
      * @param request
      * @return
      */
-    private User updateUserDataFromRequest(User user, UserRequest request) {
+    private User updateUserDataFromRequest(String username, UserRequest request) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> {
+            log.error(String.format(LOG_USER_DATA_NOT_FOUND, username));
+            return new UserException(String.format(USER_DATA_NOT_FOUND, username));
+        });
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setContactNumber(request.getContactNumber());
+        user.setLocation(request.getLocation());
+        user.setCompanyName(request.getCompanyName());
+        user.setCompanyWebsite(request.getCompanyWebsite());
         return user;
     }
 }

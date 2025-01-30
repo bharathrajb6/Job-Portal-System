@@ -21,6 +21,22 @@ public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByUsername(String username);
 
     /**
+     * This method is used to get the user by email
+     *
+     * @param email
+     * @return
+     */
+    Optional<User> findByEmail(String email);
+
+    /**
+     * This method is used to get the user by contact number
+     *
+     * @param contactNumber
+     * @return
+     */
+    Optional<User> findByContactNumber(String contactNumber);
+
+    /**
      * This method is used to update the user details
      *
      * @param firstName
