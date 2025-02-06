@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final UserValidation userValidation;
+    private final RedisServiceImpl redisService;
 
     /**
      * This method is used to get the username of the current user
@@ -45,11 +46,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserDetails() {
         String username = getUsername();
+        UserResponse userResponse = redisService.getData(username, UserResponse.class);
+        if (userResponse != null) {
+            return userResponse;
+        }
         User user = userRepository.findByUsername(username).orElseThrow(() -> {
             log.error(String.format(LOG_USER_DATA_NOT_FOUND, username));
             return new UserException(String.format(USER_DATA_NOT_FOUND, username));
         });
-        return userMapper.toUserResponse(user);
+        userResponse = userMapper.toUserResponse(user);
+        redisService.setData(username, userResponse, 300L);
+        return userResponse;
     }
 
     /**
@@ -67,6 +74,7 @@ public class UserServiceImpl implements UserService {
         try {
             userRepository.updateUserDetails(updatedUser.getFirstName(), updatedUser.getLastName(), updatedUser.getEmail(), updatedUser.getContactNumber(), username);
             log.info(String.format(LOG_USER_DETAILS_UPDATE_SUCCESS, username));
+            redisService.deleteData(username);
             return getUserDetails();
         } catch (Exception exception) {
             log.error(String.format(LOG_USER_DETAIL_UPDATE_FAILED, username, exception.getMessage()));
@@ -91,6 +99,7 @@ public class UserServiceImpl implements UserService {
         try {
             userRepository.updatePassword(passwordEncoder.encode(password), user.getUsername());
             log.info(String.format(LOG_USER_PASSWORD_UPDATE_SUCCESS, username));
+            redisService.deleteData(username);
             return getUserDetails();
         } catch (Exception exception) {
             log.error(String.format(LOG_UNABLE_TO_UPDATE_PASSWORD, username, exception.getMessage()));

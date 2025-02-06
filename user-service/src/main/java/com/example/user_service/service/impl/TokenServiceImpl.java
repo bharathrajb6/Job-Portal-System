@@ -27,16 +27,16 @@ public class TokenServiceImpl implements TokenService {
     /**
      * This method is used to log out the user
      *
-     * @param jwt_token
+     * @param jwtToken
      * @param user
      */
     @Transactional
     @Override
-    public void saveUserToken(String jwt_token, User user) {
+    public void saveUserToken(String jwtToken, User user) {
 
         Token token = new Token();
         token.setTokenID(String.valueOf(UUID.randomUUID()));
-        token.setJwtToken(jwt_token);
+        token.setJwtToken(jwtToken);
         token.setUser(user);
         token.setLoggedOut(false);
 
