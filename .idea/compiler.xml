@@ -8,11 +8,19 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="user-service" />
+        <module name="job-portal-eureka-server" />
+        <module name="job-listing-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="job-application-service" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="job-application-service" options="-parameters" />
+      <module name="job-listing-service" options="-parameters" />
+      <module name="job-portal-eureka-server" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>
   </component>

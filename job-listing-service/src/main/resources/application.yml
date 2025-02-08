@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: job-listing-service
+
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/job_application_service
+    username: root
+    password: Hunter@4343
+
+  jpa:
+    show_sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        ddl_auto: update
+        dialect: org.hibernate.dialect.MySQLDialect
+  redis:
+    host: localhost
+    port: 6379
+
+
+server:
+  port: 9091
+
+logging:
+  file:
+    name: job-listing-service/logs/app.log
+  level:
+    root: DEBUG
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+
+
