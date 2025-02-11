@@ -36,7 +36,7 @@ public class RecruiterController {
     @RequestMapping(value = "/recruiter/{username}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteRecruiter(@PathVariable("username") String username) {
         recruiterService.deleteRecruiter(username);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/recruiter/filter", method = RequestMethod.GET)

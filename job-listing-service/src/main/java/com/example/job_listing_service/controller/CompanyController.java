@@ -35,7 +35,7 @@ public class CompanyController {
     @RequestMapping(value = "/company/{companyName}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteCompanyInfo(@PathVariable("companyName") String companyName) {
         companyService.deleteCompany(companyName);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/company/filter", method = RequestMethod.GET)

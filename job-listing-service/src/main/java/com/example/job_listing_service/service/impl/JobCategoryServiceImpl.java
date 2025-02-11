@@ -9,6 +9,8 @@ import com.example.job_listing_service.repo.JobCategoryRepository;
 import com.example.job_listing_service.service.JobCategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import static com.example.job_listing_service.utils.CommonUtils.generateRandom;
@@ -23,6 +25,10 @@ public class JobCategoryServiceImpl implements JobCategoryService {
 
     @Override
     public JobCategoryResponse addJobCategory(JobCategoryRequest categoryRequest) {
+        String categoryName = categoryRequest.getCategoryName();
+        if (categoryName == null || categoryName.isEmpty()) {
+            throw new JobCategoryException("Category name cannot be null or empty");
+        }
         JobCategory category = jobCategoryMapper.toJobCategory(categoryRequest);
         category.setCategoryID("CAT" + generateRandom());
         try {
@@ -78,5 +84,11 @@ public class JobCategoryServiceImpl implements JobCategoryService {
         } catch (Exception exception) {
             throw new JobCategoryException(exception.getMessage());
         }
+    }
+
+    @Override
+    public Page<JobCategoryResponse> searchCategory(String key, Pageable pageable) {
+        Page<JobCategory> jobCategories = jobCategoryRepository.searchCategory(key, pageable);
+        return jobCategoryMapper.toJobCategoryPageResponse(jobCategories);
     }
 }
