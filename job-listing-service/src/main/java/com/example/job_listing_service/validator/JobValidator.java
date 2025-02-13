@@ -19,8 +19,8 @@ public class JobValidator {
         String location = request.getLocation();
         JobType jobType = request.getJobType();
         ExperienceLevel experienceLevel = request.getExperienceLevel();
-        String company = request.getCompanyID();
-        String recruiter = request.getRecruiterID();
+        String company = request.getCompanyName();
+        String recruiter = request.getRecruiterUsername();
         String category = request.getCategoryName();
         JobState jobState = request.getJobState();
 

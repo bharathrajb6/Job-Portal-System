@@ -52,8 +52,9 @@ public class Job {
     @JoinColumn(name = "recruiter_id", nullable = false)
     private Recruiters recruiters;
 
-    @Column(name = "category_id")
-    private String categoryID;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private JobCategory category;
 
     @CurrentTimestamp
     @Column(name = "posted_at")

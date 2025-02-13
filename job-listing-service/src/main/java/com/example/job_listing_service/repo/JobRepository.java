@@ -1,12 +1,16 @@
 package com.example.job_listing_service.repo;
 
+import com.example.job_listing_service.model.Company;
 import com.example.job_listing_service.model.Job;
+import com.example.job_listing_service.model.JobCategory;
+import com.example.job_listing_service.model.Recruiters;
 import com.example.job_listing_service.model.constants.ExperienceLevel;
 import com.example.job_listing_service.model.constants.JobState;
 import com.example.job_listing_service.model.constants.JobType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Repository
-public interface JobRepository extends JpaRepository<Job, String> {
+public interface JobRepository extends JpaRepository<Job, String>, JpaSpecificationExecutor<Job> {
 
     Optional<Job> findByJobID(String jobID);
 
@@ -31,11 +35,13 @@ public interface JobRepository extends JpaRepository<Job, String> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Job j SET j.jobState = ?1 where j.jobID = ?2")
-    void updateJobDetails(String title, String description, double salary, String location, JobType type, ExperienceLevel experienceLevel, String companyID, String recruiterID, String categoryID, String jobID);
+    @Query("UPDATE Job j SET j.title = ?1, j.description = ?2, j.salary = ?3, j.location = ?4, j.jobType = ?5, j.experienceLevel = ?6, j.company = ?7, j.recruiters = ?8, j.jobCategory ?9 where j.jobID = ?10")
+    void updateJobDetails(String title, String description, double salary, String location, JobType type, ExperienceLevel experienceLevel, Company company, Recruiters recruiter, JobCategory jobCategory, String jobID);
 
     @Modifying
     @Transactional
     @Query("UPDATE Job j SET j.jobState = ?1 where j.jobID = ?2")
     void updateJobState(JobState jobState, String jobID);
+
+    Page<Job> findAll(Pageable pageable);
 }

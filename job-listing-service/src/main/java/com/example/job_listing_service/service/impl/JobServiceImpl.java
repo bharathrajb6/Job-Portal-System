@@ -5,10 +5,17 @@ import com.example.job_listing_service.dto.response.JobResponse;
 import com.example.job_listing_service.exception.JobException;
 import com.example.job_listing_service.helper.JobHelper;
 import com.example.job_listing_service.mapper.JobMapper;
+import com.example.job_listing_service.model.Company;
 import com.example.job_listing_service.model.Job;
+import com.example.job_listing_service.model.JobCategory;
+import com.example.job_listing_service.model.Recruiters;
 import com.example.job_listing_service.model.constants.ExperienceLevel;
 import com.example.job_listing_service.model.constants.JobState;
 import com.example.job_listing_service.model.constants.JobType;
+import com.example.job_listing_service.persistance.CompanyDataPersistance;
+import com.example.job_listing_service.persistance.JobCategoryDataPersistance;
+import com.example.job_listing_service.persistance.JobDataPersistance;
+import com.example.job_listing_service.persistance.RecruiterDataPersistance;
 import com.example.job_listing_service.repo.JobRepository;
 import com.example.job_listing_service.service.JobService;
 import lombok.RequiredArgsConstructor;
@@ -22,84 +29,76 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class JobServiceImpl implements JobService {
 
-    private final JobRepository jobRepository;
+    private final JobDataPersistance jobDataPersistance;
+    private final CompanyDataPersistance companyDataPersistance;
+    private final RecruiterDataPersistance recruiterDataPersistance;
+    private final JobCategoryDataPersistance jobCategoryDataPersistance;
     private final JobMapper jobMapper;
     private final JobHelper jobHelper;
 
     @Override
     public JobResponse postJob(JobRequest request) {
         Job job = jobHelper.generateJob(request);
-        try {
-            jobRepository.save(job);
-        } catch (Exception exception) {
-            throw new JobException(exception.getMessage());
-        }
+        jobDataPersistance.postJob(job);
         return getJobDetails(job.getJobID());
     }
 
     @Override
     public JobResponse getJobDetails(String jobID) {
-        Job job = jobRepository.findByJobID(jobID).orElseThrow(() -> new JobException("Job not found"));
+        Job job = jobDataPersistance.getJobDetailsById(jobID);
         return jobMapper.toJobResponse(job);
     }
 
     @Override
     public JobResponse updateJob(String jobID, JobRequest request) {
-        Job job = jobRepository.findByJobID(jobID).orElseThrow(() -> new JobException("Job not found with this ID"));
-        try {
-            jobRepository.updateJobDetails(request.getTitle(), request.getDescription(), request.getSalary(), request.getLocation(), request.getJobType(), request.getExperienceLevel(), request.getCompanyID(), request.getRecruiterID(), request.getCategoryName(), jobID);
-        } catch (Exception exception) {
-            throw new JobException(exception.getMessage());
+        boolean isJobPresent = jobDataPersistance.isJobPresent(jobID);
+        if (!isJobPresent) {
+            throw new JobException("Job not found with ID");
         }
+
+        Company company = companyDataPersistance.getCompanyDetails(request.getCompanyName());
+        Recruiters recruiters = recruiterDataPersistance.getRecruiterDetails(request.getRecruiterUsername());
+        JobCategory jobCategory = jobCategoryDataPersistance.getJobCategory(request.getCategoryName());
+
+        Job job = jobDataPersistance.getJobDetailsById(jobID);
+        job.setTitle(request.getTitle());
+        job.setDescription(request.getDescription());
+        job.setSalary(request.getSalary());
+        job.setLocation(request.getLocation());
+        job.setJobType(request.getJobType());
+        job.setExperienceLevel(request.getExperienceLevel());
+        job.setCompany(company);
+        job.setRecruiters(recruiters);
+        job.setCategory(jobCategory);
+        job.setJobState(request.getJobState());
+        jobDataPersistance.updateJobDetails(job);
         return getJobDetails(jobID);
     }
 
     @Override
     public void deleteJob(String jobID) {
-        boolean isJobPresent = jobRepository.findByJobID(jobID).isPresent();
+        boolean isJobPresent = jobDataPersistance.isJobPresent(jobID);
         if (isJobPresent) {
-            try {
-                jobRepository.deleteById(jobID);
-            } catch (Exception exception) {
-                throw new JobException(exception.getMessage());
-            }
+            jobDataPersistance.deleteJobDetails(jobID);
+        } else {
+            throw new JobException("Job not found");
         }
     }
 
     @Override
     public JobResponse updateJobStatus(String jobID, JobState state) {
-        Job job = jobRepository.findByJobID(jobID).orElseThrow(() -> new JobException("Job not found with this ID"));
+        Job job = jobDataPersistance.getJobDetailsById(jobID);
         if (job.getJobState() == state) {
             throw new JobException("Already it is in this state");
         }
-        try {
-            jobRepository.updateJobState(state, jobID);
-        } catch (Exception exception) {
-            throw new JobException(exception.getMessage());
-        }
+        jobDataPersistance.updateJobStatus(state, jobID);
         return getJobDetails(jobID);
     }
 
     @Override
-    public Page<JobResponse> getJobsByTitle(String title, Pageable pageable) {
-        Page<Job> jobs = jobRepository.findByTitle(title, pageable);
+    public Page<JobResponse> searchJobs(String title, double salary, String location, JobType jobType, ExperienceLevel experienceLevel, String companyID, Pageable pageable) {
+        Company company = companyDataPersistance.getCompanyDetails(companyID);
+        Page<Job> jobs = jobDataPersistance.searchJobs(title, salary, location, jobType, experienceLevel, company, pageable);
         return jobMapper.toJobResponsePage(jobs);
-    }
-
-    @Override
-    public Page<JobResponse> getJobsBySalary(double salary, Pageable pageable) {
-        Page<Job> jobs = jobRepository.findBySalary(salary, pageable);
-        return jobMapper.toJobResponsePage(jobs);
-    }
-
-    @Override
-    public Page<JobResponse> getJobsByLocation(String location, Pageable pageable) {
-        Page<Job> jobs = jobRepository.findByLocation(location, pageable);
-        return jobMapper.toJobResponsePage(jobs);
-    }
-
-    @Override
-    public Page<JobResponse> searchJobs(String title, double salary, String location, JobType jobType, ExperienceLevel experienceLevel, String company) {
-        return null;
     }
 }

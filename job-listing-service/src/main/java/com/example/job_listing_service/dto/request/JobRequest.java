@@ -19,8 +19,8 @@ public class JobRequest {
     private String location;
     private JobType jobType;
     private ExperienceLevel experienceLevel;
-    private String companyID;
-    private String recruiterID;
+    private String companyName;
+    private String recruiterUsername;
     private String categoryName;
     private JobState jobState;
 }
