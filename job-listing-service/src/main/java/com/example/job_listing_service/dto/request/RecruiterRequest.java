@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RecruiterRequest {
     private String username;
-    private String companyID;
+    private String companyName;
     private String position;
 }

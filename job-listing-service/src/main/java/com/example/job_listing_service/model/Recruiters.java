@@ -1,9 +1,6 @@
 package com.example.job_listing_service.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "recruiters")
@@ -27,8 +25,9 @@ public class Recruiters {
     @Column(name = "username", unique = true)
     private String username;
 
-    @Column(name = "company_id")
-    private String companyID;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
     @Column(name = "position")
     private String position;
@@ -37,4 +36,6 @@ public class Recruiters {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
+    @OneToMany(mappedBy = "recruiters", fetch = FetchType.LAZY)
+    private List<Job> jobs;
 }

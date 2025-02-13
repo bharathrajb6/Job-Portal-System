@@ -15,5 +15,5 @@ public interface RecruiterService {
 
     void deleteRecruiter(String username);
 
-    Page<RecruiterResponse> searchRecruiter(String key, Pageable pageable);
+    Page<RecruiterResponse> searchRecruiter(String username, String companyName, String position, Pageable pageable);
 }

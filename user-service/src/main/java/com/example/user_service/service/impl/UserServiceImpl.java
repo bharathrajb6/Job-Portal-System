@@ -59,6 +59,21 @@ public class UserServiceImpl implements UserService {
         return userResponse;
     }
 
+    @Override
+    public UserResponse getUserDetails(String username) {
+        UserResponse userResponse = redisService.getData(username, UserResponse.class);
+        if (userResponse != null) {
+            return userResponse;
+        }
+        User user = userRepository.findByUsername(username).orElseThrow(() -> {
+            log.error(String.format(LOG_USER_DATA_NOT_FOUND, username));
+            return new UserException(String.format(USER_DATA_NOT_FOUND, username));
+        });
+        userResponse = userMapper.toUserResponse(user);
+        redisService.setData(username, userResponse, 300L);
+        return userResponse;
+    }
+
     /**
      * This method is used to update the user details
      *

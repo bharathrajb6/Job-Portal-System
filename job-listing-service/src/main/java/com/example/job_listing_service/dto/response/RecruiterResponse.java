@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 public class RecruiterResponse {
     private String recruiterID;
     private String username;
-    private String companyID;
+    private CompanyResponse company;
     private String position;
     private Timestamp createdAt;
 }

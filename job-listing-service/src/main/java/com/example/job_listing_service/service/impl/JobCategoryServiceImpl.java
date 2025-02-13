@@ -51,7 +51,7 @@ public class JobCategoryServiceImpl implements JobCategoryService {
 
     @Override
     public JobCategoryResponse updateJobCategory(String categoryID, String newCategoryName) {
-        if (!categoryID.startsWith("CAT")) {
+        if (!categoryID.startsWith("CATE")) {
             throw new JobCategoryException("Invalid categoryID");
         }
         if (newCategoryName == null || newCategoryName.isEmpty()) {

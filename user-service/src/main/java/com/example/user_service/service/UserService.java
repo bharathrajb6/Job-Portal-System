@@ -7,6 +7,8 @@ public interface UserService {
 
     UserResponse getUserDetails();
 
+    UserResponse getUserDetails(String username);
+
     UserResponse updateUserDetails(String username, UserRequest request);
 
     UserResponse updatePassword(String username, String password);

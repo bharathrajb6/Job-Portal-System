@@ -27,7 +27,6 @@ public class RecruiterController {
         return recruiterService.getRecruiter(username);
     }
 
-
     @RequestMapping(value = "/recruiter/{username}", method = RequestMethod.PUT)
     public RecruiterResponse updateRecruiterDetails(@PathVariable("username") String username, @RequestBody RecruiterRequest request) {
         return recruiterService.updateRecruiterDetails(username, request);
@@ -40,7 +39,10 @@ public class RecruiterController {
     }
 
     @RequestMapping(value = "/recruiter/filter", method = RequestMethod.GET)
-    public Page<RecruiterResponse> searchRecruiter(@RequestParam("key") String key, Pageable pageable) {
-        return recruiterService.searchRecruiter(key, pageable);
+    public Page<RecruiterResponse> searchRecruiter(@RequestParam(value = "username", required = false) String username,
+                                                   @RequestParam(value = "companyName", required = false) String companyName,
+                                                   @RequestParam(value = "position", required = false) String position,
+                                                   Pageable pageable) {
+        return recruiterService.searchRecruiter(username, companyName, position, pageable);
     }
 }

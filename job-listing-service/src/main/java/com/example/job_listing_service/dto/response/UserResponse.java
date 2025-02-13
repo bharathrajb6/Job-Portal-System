@@ -1,7 +1,5 @@
-package com.example.user_service.dto.response;
+package com.example.job_listing_service.dto.response;
 
-import com.example.user_service.model.AccountStatus;
-import com.example.user_service.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

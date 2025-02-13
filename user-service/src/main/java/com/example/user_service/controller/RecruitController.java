@@ -23,6 +23,11 @@ public class RecruitController {
         return userService.getUserDetails();
     }
 
+    @RequestMapping(value = "/details/{username}", method = RequestMethod.GET)
+    public UserResponse getRecruiterDetails(@PathVariable("username") String username) {
+        return userService.getUserDetails(username);
+    }
+
     /**
      * This method is used to update recruiter details
      *

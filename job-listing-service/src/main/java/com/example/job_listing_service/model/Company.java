@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "company")
@@ -36,4 +37,10 @@ public class Company {
     @CreationTimestamp
     @Column(name = "created_at")
     private Timestamp createdAt;
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    private List<Job> jobs;
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    private List<Recruiters> recruiters;
 }

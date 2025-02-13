@@ -44,11 +44,13 @@ public class Job {
     @Enumerated(value = EnumType.STRING)
     private ExperienceLevel experienceLevel;
 
-    @Column(name = "company_id")
-    private String companyID;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
-    @Column(name = "recruiter_id")
-    private String recruiterID;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recruiter_id", nullable = false)
+    private Recruiters recruiters;
 
     @Column(name = "category_id")
     private String categoryID;
