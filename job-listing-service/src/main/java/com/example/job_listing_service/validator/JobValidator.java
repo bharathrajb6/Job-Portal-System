@@ -12,6 +12,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class JobValidator {
 
+    /**
+     * Validates the job details in the job request
+     *
+     * @param request
+     */
     public void validateJobDetails(JobRequest request) {
         String title = request.getTitle();
         String description = request.getDescription();

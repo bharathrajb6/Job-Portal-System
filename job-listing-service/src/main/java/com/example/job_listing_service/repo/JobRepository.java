@@ -22,26 +22,49 @@ import java.util.Optional;
 @Repository
 public interface JobRepository extends JpaRepository<Job, String>, JpaSpecificationExecutor<Job> {
 
+    /**
+     * Find job by jobID in the database
+     *
+     * @param jobID
+     * @return
+     */
     Optional<Job> findByJobID(String jobID);
 
-    @Query("SELECT j from Job j where j.title like %:title%")
-    Page<Job> findByTitle(@Param("title") String title, Pageable pageable);
-
-    @Query("SELECT j from Job j where j.salary=:salary")
-    Page<Job> findBySalary(@Param("salary") Double salary, Pageable pageable);
-
-    @Query("SELECT j from Job j where j.location like %:location%")
-    Page<Job> findByLocation(@Param("location") String location, Pageable pageable);
-
+    /**
+     * Update job details in the database
+     *
+     * @param title
+     * @param description
+     * @param salary
+     * @param location
+     * @param type
+     * @param experienceLevel
+     * @param company
+     * @param recruiter
+     * @param jobCategory
+     * @param jobID
+     */
     @Modifying
     @Transactional
     @Query("UPDATE Job j SET j.title = ?1, j.description = ?2, j.salary = ?3, j.location = ?4, j.jobType = ?5, j.experienceLevel = ?6, j.company = ?7, j.recruiters = ?8, j.category = ?9 where j.jobID = ?10")
     void updateJobDetails(String title, String description, double salary, String location, JobType type, ExperienceLevel experienceLevel, Company company, Recruiters recruiter, JobCategory jobCategory, String jobID);
 
+    /**
+     * Update job state in the database
+     *
+     * @param jobState
+     * @param jobID
+     */
     @Modifying
     @Transactional
     @Query("UPDATE Job j SET j.jobState = ?1 where j.jobID = ?2")
     void updateJobState(JobState jobState, String jobID);
 
+    /**
+     * Find all jobs with pagination
+     *
+     * @param pageable
+     * @return
+     */
     Page<Job> findAll(Pageable pageable);
 }

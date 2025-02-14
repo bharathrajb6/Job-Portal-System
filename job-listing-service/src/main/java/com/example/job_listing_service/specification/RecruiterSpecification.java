@@ -10,6 +10,14 @@ import java.util.List;
 
 public class RecruiterSpecification {
 
+    /**
+     * Get recruiters based on username, company and position
+     *
+     * @param username
+     * @param company
+     * @param position
+     * @return
+     */
     public static Specification<Recruiters> getRecruiters(String username, Company company, String position) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicateList = new ArrayList<>();

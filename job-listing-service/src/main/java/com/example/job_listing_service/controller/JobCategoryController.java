@@ -17,32 +17,70 @@ public class JobCategoryController {
 
     private final JobCategoryService jobCategoryService;
 
+    /**
+     * Add a new job category
+     *
+     * @param categoryRequest
+     * @return
+     */
     @RequestMapping(value = "/category", method = RequestMethod.POST)
     public JobCategoryResponse addJobCategory(@RequestBody JobCategoryRequest categoryRequest) {
         return jobCategoryService.addJobCategory(categoryRequest);
     }
 
+    /**
+     * Get a job category by categoryID
+     *
+     * @param categoryID
+     * @return
+     */
     @RequestMapping(value = "/category/{categoryID}", method = RequestMethod.GET)
     public JobCategoryResponse getJobCategory(@PathVariable("categoryID") String categoryID) {
         return jobCategoryService.getJobCategory(categoryID);
     }
 
+    /**
+     * Get all job categories
+     *
+     * @param pageable
+     * @return
+     */
     @RequestMapping(value = "/category", method = RequestMethod.GET)
     public Page<JobCategoryResponse> getAllJobCategories(Pageable pageable) {
         return jobCategoryService.getAllJobCategories(pageable);
     }
 
+    /**
+     * Update a job category
+     *
+     * @param categoryID
+     * @param categoryName
+     * @return
+     */
     @RequestMapping(value = "/category/{categoryID}", method = RequestMethod.PUT)
     public JobCategoryResponse updateJobCategory(@PathVariable("categoryID") String categoryID, @RequestParam("categoryName") String categoryName) {
         return jobCategoryService.updateJobCategory(categoryID, categoryName);
     }
 
+    /**
+     * Delete a job category by categoryID
+     *
+     * @param categoryID
+     * @return
+     */
     @RequestMapping(value = "/category/{categoryID}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteJobCategory(@PathVariable("categoryID") String categoryID) {
         jobCategoryService.deleteJobCategory(categoryID);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * Search job categories by key
+     *
+     * @param key
+     * @param pageable
+     * @return
+     */
     @RequestMapping(value = "/category/filter", method = RequestMethod.GET)
     public Page<JobCategoryResponse> searchCategory(@RequestParam("key") String key, Pageable pageable) {
         return jobCategoryService.searchCategory(key, pageable);

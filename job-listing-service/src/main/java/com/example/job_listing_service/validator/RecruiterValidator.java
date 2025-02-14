@@ -13,6 +13,11 @@ public class RecruiterValidator {
 
     private final RecruiterRepository recruiterRepository;
 
+    /**
+     * Validate recruiter details before saving to database
+     *
+     * @param request
+     */
     public void validateRecruiterDetails(RecruiterRequest request) {
 
         if (request == null) {
@@ -41,6 +46,13 @@ public class RecruiterValidator {
         }
     }
 
+    /**
+     * Validate recruiter details before updating to database
+     *
+     * @param username
+     * @param companyID
+     * @param position
+     */
     public void validateUpdatedRecruiterCredentials(String username, String companyID, String position) {
 
         if (username == null || username.trim().isEmpty()) {

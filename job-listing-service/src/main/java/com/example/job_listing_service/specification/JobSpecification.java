@@ -13,6 +13,17 @@ import java.util.List;
 
 public class JobSpecification {
 
+    /**
+     * This method is used to get the jobs based on the given parameters
+     *
+     * @param title
+     * @param salary
+     * @param location
+     * @param jobType
+     * @param experienceLevel
+     * @param company
+     * @return
+     */
     public static Specification<Job> getJobs(String title, double salary, String location, JobType jobType, ExperienceLevel experienceLevel, Company company) {
         return (root, query, criteriaBuilder) -> {
 

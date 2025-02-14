@@ -25,6 +25,12 @@ public class JobHelper {
     private final RecruiterDataPersistance recruiterService;
     private final JobCategoryDataPersistance jobCategoryDataPersistance;
 
+    /**
+     * Generate job by job request
+     *
+     * @param jobRequest
+     * @return
+     */
     public Job generateJob(JobRequest jobRequest) {
 
         jobValidator.validateJobDetails(jobRequest);

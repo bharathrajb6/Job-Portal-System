@@ -19,6 +19,11 @@ public class CompanyDataPersistance {
 
     private final CompanyRepository companyRepository;
 
+    /**
+     * Save company details to database
+     *
+     * @param company
+     */
     public void saveCompany(Company company) {
         try {
             companyRepository.save(company);
@@ -27,6 +32,12 @@ public class CompanyDataPersistance {
         }
     }
 
+    /**
+     * Get company details from database
+     *
+     * @param key
+     * @return
+     */
     public Company getCompanyDetails(String key) {
         if (key.startsWith("COM")) {
             return companyRepository.findByCompanyID(key).orElseThrow(() -> new CompanyException("Company not found"));
@@ -34,6 +45,11 @@ public class CompanyDataPersistance {
         return companyRepository.findByCompanyName(key).orElseThrow(() -> new CompanyException("Company not found"));
     }
 
+    /**
+     * Update company details in database
+     *
+     * @param company
+     */
     public void updateCompanyDetails(Company company) {
         try {
             companyRepository.updateCompanyDetails(company.getCompanyName(), company.getWebsite(), company.getLocation(), company.getIndustry(), company.getCompanyID());
@@ -42,6 +58,11 @@ public class CompanyDataPersistance {
         }
     }
 
+    /**
+     * Delete company details from database
+     *
+     * @param company
+     */
     public void deleteCompany(Company company) {
         try {
             companyRepository.delete(company);
@@ -50,14 +71,35 @@ public class CompanyDataPersistance {
         }
     }
 
-    public Page<Company> getAllCompanies(String companyName, String location, String industry, Pageable pageable) {
+    /**
+     * Search companies based on company name, location and industry
+     *
+     * @param companyName
+     * @param location
+     * @param industry
+     * @param pageable
+     * @return
+     */
+    public Page<Company> searchCompanies(String companyName, String location, String industry, Pageable pageable) {
         return companyRepository.findAll(CompanySpecification.getCompanies(companyName, location, industry), pageable);
     }
 
+    /**
+     * Get all companies from database
+     *
+     * @param pageable
+     * @return
+     */
     public Page<Company> getAllCompanies(Pageable pageable) {
         return companyRepository.findAll(pageable);
     }
 
+    /**
+     * Check if company is present in database
+     *
+     * @param companyName
+     * @return
+     */
     public boolean isCompanyPresent(String companyName) {
         return companyRepository.findByCompanyName(companyName).isPresent();
     }

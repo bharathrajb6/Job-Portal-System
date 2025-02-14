@@ -24,6 +24,11 @@ public class JobDataPersistance {
 
     private final JobRepository jobRepository;
 
+    /**
+     * Persists the job details in the database
+     *
+     * @param job
+     */
     public void postJob(Job job) {
         try {
             jobRepository.save(job);
@@ -32,10 +37,21 @@ public class JobDataPersistance {
         }
     }
 
+    /**
+     * Fetches the job details by jobID
+     *
+     * @param jobID
+     * @return
+     */
     public Job getJobDetailsById(String jobID) {
         return jobRepository.findByJobID(jobID).orElseThrow(() -> new JobException("Job not found"));
     }
 
+    /**
+     * Updates the job details in the database
+     *
+     * @param job
+     */
     public void updateJobDetails(Job job) {
         try {
             jobRepository.updateJobDetails(job.getTitle(), job.getDescription(), job.getSalary(), job.getLocation(), job.getJobType(), job.getExperienceLevel(), job.getCompany(), job.getRecruiters(), job.getCategory(), job.getJobID());
@@ -44,7 +60,11 @@ public class JobDataPersistance {
         }
     }
 
-
+    /**
+     * Deletes the job details from the database
+     *
+     * @param jobID
+     */
     public void deleteJobDetails(String jobID) {
         try {
             jobRepository.deleteById(jobID);
@@ -53,10 +73,22 @@ public class JobDataPersistance {
         }
     }
 
+    /**
+     * Checks if the job is present in the database
+     *
+     * @param jobID
+     * @return
+     */
     public boolean isJobPresent(String jobID) {
         return jobRepository.findByJobID(jobID).isPresent();
     }
 
+    /**
+     * Updates the job status in the database
+     *
+     * @param jobState
+     * @param jobID
+     */
     public void updateJobStatus(JobState jobState, String jobID) {
         try {
             jobRepository.updateJobState(jobState, jobID);
@@ -65,6 +97,18 @@ public class JobDataPersistance {
         }
     }
 
+    /**
+     * Searches the jobs based on the search criteria
+     *
+     * @param title
+     * @param salary
+     * @param location
+     * @param jobType
+     * @param experienceLevel
+     * @param company
+     * @param pageable
+     * @return
+     */
     public Page<Job> searchJobs(String title, double salary, String location, JobType jobType, ExperienceLevel experienceLevel, Company company, Pageable pageable) {
         return jobRepository.findAll(JobSpecification.getJobs(title, salary, location, jobType, experienceLevel, company), pageable);
     }

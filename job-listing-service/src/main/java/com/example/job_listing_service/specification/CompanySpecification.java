@@ -10,6 +10,14 @@ import java.util.List;
 
 public class CompanySpecification {
 
+    /**
+     * This method is used to get the companies based on the company name, location and industry
+     *
+     * @param companyName
+     * @param location
+     * @param industry
+     * @return
+     */
     public static Specification<Company> getCompanies(String companyName, String location, String industry) {
 
         return (root, query, criteriaBuilder) -> {

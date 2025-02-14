@@ -26,6 +26,12 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyMapper companyMapper;
     private final RecruiterDataPersistance recruiterDataPersistance;
 
+    /**
+     * Add company details to the database
+     *
+     * @param companyRequest
+     * @return
+     */
     @Override
     public CompanyResponse addCompany(CompanyRequest companyRequest) {
         log.info("Validate the company details");
@@ -36,18 +42,37 @@ public class CompanyServiceImpl implements CompanyService {
         return getCompanyDetails(company.getCompanyName());
     }
 
+    /**
+     * Get company details from the database by company name
+     *
+     * @param companyName
+     * @return
+     */
     @Override
     public CompanyResponse getCompanyDetails(String companyName) {
         Company company = companyDataPersistance.getCompanyDetails(companyName);
         return companyMapper.toCompanyResponse(company);
     }
 
+    /**
+     * Get all companies from the database
+     *
+     * @param pageable
+     * @return
+     */
     @Override
     public Page<CompanyResponse> getAllCompanies(Pageable pageable) {
         Page<Company> companies = companyDataPersistance.getAllCompanies(pageable);
         return companyMapper.toCompanyResponsePage(companies);
     }
 
+    /**
+     * Update company details in the database
+     *
+     * @param key
+     * @param companyRequest
+     * @return
+     */
     @Override
     public CompanyResponse updateCompanyDetails(String key, CompanyRequest companyRequest) {
         companyValidator.validateCompanyDetails(companyRequest);
@@ -60,15 +85,29 @@ public class CompanyServiceImpl implements CompanyService {
         return getCompanyDetails(company.getCompanyName());
     }
 
+    /**
+     * Delete company details from the database
+     *
+     * @param key
+     */
     @Override
     public void deleteCompany(String key) {
         Company company = companyDataPersistance.getCompanyDetails(key);
         companyDataPersistance.deleteCompany(company);
     }
 
+    /**
+     * Search companies based on company name, location and industry
+     *
+     * @param companyName
+     * @param location
+     * @param industry
+     * @param pageable
+     * @return
+     */
     @Override
     public Page<CompanyResponse> searchCompany(String companyName, String location, String industry, Pageable pageable) {
-        Page<Company> companies = companyDataPersistance.getAllCompanies(companyName, location, industry, pageable);
+        Page<Company> companies = companyDataPersistance.searchCompanies(companyName, location, industry, pageable);
         return companyMapper.toCompanyResponsePage(companies);
     }
 }

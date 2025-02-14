@@ -20,6 +20,11 @@ public class RecruiterDataPersistance {
 
     private final RecruiterRepository recruiterRepository;
 
+    /**
+     * Save recruiter details to the database
+     *
+     * @param recruiters
+     */
     public void saveRecruiterDetails(Recruiters recruiters) {
         try {
             recruiterRepository.save(recruiters);
@@ -28,11 +33,23 @@ public class RecruiterDataPersistance {
         }
     }
 
+    /**
+     * Get recruiter details based on username
+     *
+     * @param username
+     * @return
+     */
     public Recruiters getRecruiterDetails(String username) {
         return recruiterRepository.findByUsername(username).orElseThrow(() -> new RecruiterException("Recruiter not found"));
     }
 
-
+    /**
+     * Update recruiter details
+     *
+     * @param company
+     * @param position
+     * @param username
+     */
     public void updateRecruiterDetails(Company company, String position, String username) {
         try {
             recruiterRepository.updateRecruiterDetails(company, position, username);
@@ -41,6 +58,11 @@ public class RecruiterDataPersistance {
         }
     }
 
+    /**
+     * Delete recruiter details
+     *
+     * @param recruiters
+     */
     public void deleteRecruiterDetails(Recruiters recruiters) {
         try {
             recruiterRepository.delete(recruiters);
@@ -49,14 +71,36 @@ public class RecruiterDataPersistance {
         }
     }
 
-    public Page<Recruiters> searchCompany(String username, Company company, String position, Pageable pageable) {
+    /**
+     * Search recruiter based on company, position and username
+     *
+     * @param username
+     * @param company
+     * @param position
+     * @param pageable
+     * @return
+     */
+    public Page<Recruiters> searchRecruiters(String username, Company company, String position, Pageable pageable) {
         return recruiterRepository.findAll(RecruiterSpecification.getRecruiters(username, company, position), pageable);
     }
 
+    /**
+     * Check if recruiter is present in the database
+     *
+     * @param username
+     * @return
+     */
     public boolean isRecruiterPresent(String username) {
         return recruiterRepository.findByUsername(username).isPresent();
     }
 
+    /**
+     * Get recruiters based on company
+     *
+     * @param company
+     * @param pageable
+     * @return
+     */
     public Page<Recruiters> getRecruitersBasedOnCompany(Company company, Pageable pageable) {
         return recruiterRepository.findByCompanyName(company, pageable);
     }

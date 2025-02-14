@@ -10,6 +10,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CompanyValidator {
 
+    /**
+     * Validate company details such as company name, website, location and industry
+     *
+     * @param companyRequest
+     */
     public void validateCompanyDetails(CompanyRequest companyRequest) {
 
         String companyName = companyRequest.getCompanyName();

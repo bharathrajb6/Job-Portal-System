@@ -36,6 +36,12 @@ public class JobServiceImpl implements JobService {
     private final JobMapper jobMapper;
     private final JobHelper jobHelper;
 
+    /**
+     * Post a job to the system
+     *
+     * @param request
+     * @return
+     */
     @Override
     public JobResponse postJob(JobRequest request) {
         Job job = jobHelper.generateJob(request);
@@ -43,12 +49,25 @@ public class JobServiceImpl implements JobService {
         return getJobDetails(job.getJobID());
     }
 
+    /**
+     * Get job details by jobID
+     *
+     * @param jobID
+     * @return
+     */
     @Override
     public JobResponse getJobDetails(String jobID) {
         Job job = jobDataPersistance.getJobDetailsById(jobID);
         return jobMapper.toJobResponse(job);
     }
 
+    /**
+     * Update job details
+     *
+     * @param jobID
+     * @param request
+     * @return
+     */
     @Override
     public JobResponse updateJob(String jobID, JobRequest request) {
         boolean isJobPresent = jobDataPersistance.isJobPresent(jobID);
@@ -75,6 +94,11 @@ public class JobServiceImpl implements JobService {
         return getJobDetails(jobID);
     }
 
+    /**
+     * Delete job by jobID
+     *
+     * @param jobID
+     */
     @Override
     public void deleteJob(String jobID) {
         boolean isJobPresent = jobDataPersistance.isJobPresent(jobID);
@@ -85,6 +109,13 @@ public class JobServiceImpl implements JobService {
         }
     }
 
+    /**
+     * Update job status
+     *
+     * @param jobID
+     * @param state
+     * @return
+     */
     @Override
     public JobResponse updateJobStatus(String jobID, JobState state) {
         Job job = jobDataPersistance.getJobDetailsById(jobID);
@@ -95,9 +126,24 @@ public class JobServiceImpl implements JobService {
         return getJobDetails(jobID);
     }
 
+    /**
+     * Search jobs based on title, salary, location, jobType, experienceLevel, companyID
+     *
+     * @param title
+     * @param salary
+     * @param location
+     * @param jobType
+     * @param experienceLevel
+     * @param companyID
+     * @param pageable
+     * @return
+     */
     @Override
     public Page<JobResponse> searchJobs(String title, double salary, String location, JobType jobType, ExperienceLevel experienceLevel, String companyID, Pageable pageable) {
-        Company company = companyDataPersistance.getCompanyDetails(companyID);
+        Company company = null;
+        if (companyID != null) {
+            company = companyDataPersistance.getCompanyDetails(companyID);
+        }
         Page<Job> jobs = jobDataPersistance.searchJobs(title, salary, location, jobType, experienceLevel, company, pageable);
         return jobMapper.toJobResponsePage(jobs);
     }
