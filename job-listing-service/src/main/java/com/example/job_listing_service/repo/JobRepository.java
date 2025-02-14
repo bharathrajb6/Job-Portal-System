@@ -35,7 +35,7 @@ public interface JobRepository extends JpaRepository<Job, String>, JpaSpecificat
 
     @Modifying
     @Transactional
-    @Query("UPDATE Job j SET j.title = ?1, j.description = ?2, j.salary = ?3, j.location = ?4, j.jobType = ?5, j.experienceLevel = ?6, j.company = ?7, j.recruiters = ?8, j.jobCategory ?9 where j.jobID = ?10")
+    @Query("UPDATE Job j SET j.title = ?1, j.description = ?2, j.salary = ?3, j.location = ?4, j.jobType = ?5, j.experienceLevel = ?6, j.company = ?7, j.recruiters = ?8, j.category = ?9 where j.jobID = ?10")
     void updateJobDetails(String title, String description, double salary, String location, JobType type, ExperienceLevel experienceLevel, Company company, Recruiters recruiter, JobCategory jobCategory, String jobID);
 
     @Modifying

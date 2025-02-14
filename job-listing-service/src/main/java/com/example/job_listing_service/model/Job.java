@@ -13,7 +13,7 @@ import org.hibernate.annotations.CurrentTimestamp;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "job")
+@Table(name = "jobs")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -60,7 +60,7 @@ public class Job {
     @Column(name = "posted_at")
     private Timestamp postedAt;
 
-    @Column(name = "job_state")
+    @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private JobState jobState;
 }

@@ -78,7 +78,10 @@ public class RecruiterServiceImpl implements RecruiterService {
 
     @Override
     public Page<RecruiterResponse> searchRecruiter(String username, String companyName, String position, Pageable pageable) {
-        Company company = companyDataPersistance.getCompanyDetails(companyName);
+        Company company = null;
+        if (companyName != null) {
+            company = companyDataPersistance.getCompanyDetails(companyName);
+        }
         Page<Recruiters> recruiters = recruiterDataPersistance.searchCompany(username, company, position, pageable);
         return recruiterMapper.toTransactionResponsePages(recruiters);
     }

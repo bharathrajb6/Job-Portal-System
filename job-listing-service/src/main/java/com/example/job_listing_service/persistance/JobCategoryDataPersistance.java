@@ -31,6 +31,10 @@ public class JobCategoryDataPersistance {
         return jobCategoryRepository.findByCategoryName(key).orElseThrow(() -> new JobCategoryException("Category not found"));
     }
 
+    public Page<JobCategory> getAllJobCategories(Pageable pageable) {
+        return jobCategoryRepository.findAll(pageable);
+    }
+
     public void updateJobCategory(String newCategoryName, String categoryID) {
         try {
             jobCategoryRepository.updateJobCategory(newCategoryName, categoryID);

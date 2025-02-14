@@ -23,8 +23,8 @@ public class JobResponse {
     private JobType jobType;
     private ExperienceLevel experienceLevel;
     private CompanyResponse company;
-    private RecruiterResponse recruiterName;
-    private JobCategoryResponse categoryName;
+    private RecruiterResponse recruiters;
+    private JobCategoryResponse category;
     private JobState jobState;
     private Timestamp postedAt;
 }

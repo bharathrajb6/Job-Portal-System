@@ -42,14 +42,20 @@ public class JobCategoryServiceImpl implements JobCategoryService {
     }
 
     @Override
+    public Page<JobCategoryResponse> getAllJobCategories(Pageable pageable) {
+        Page<JobCategory> jobCategories = jobCategoryDataPersistance.getAllJobCategories(pageable);
+        return jobCategoryMapper.toJobCategoryPageResponse(jobCategories);
+    }
+
+    @Override
     public JobCategoryResponse updateJobCategory(String categoryID, String newCategoryName) {
-        if (!categoryID.startsWith("CATE")) {
+        if (!categoryID.startsWith("CAT")) {
             throw new JobCategoryException("Invalid categoryID");
         }
         if (newCategoryName == null || newCategoryName.isEmpty()) {
             throw new JobCategoryException("Invalid category name");
         }
-        boolean isJobCategoryPresent = jobCategoryDataPersistance.isCategoryPresent(newCategoryName);
+        boolean isJobCategoryPresent = jobCategoryDataPersistance.isCategoryPresent(categoryID);
         if (!isJobCategoryPresent) {
             throw new JobCategoryException("Job category not found");
         }

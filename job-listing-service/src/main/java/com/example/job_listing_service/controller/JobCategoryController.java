@@ -23,10 +23,14 @@ public class JobCategoryController {
     }
 
     @RequestMapping(value = "/category/{categoryID}", method = RequestMethod.GET)
-    public JobCategoryResponse addJobCategory(@PathVariable("categoryID") String categoryID) {
+    public JobCategoryResponse getJobCategory(@PathVariable("categoryID") String categoryID) {
         return jobCategoryService.getJobCategory(categoryID);
     }
 
+    @RequestMapping(value = "/category", method = RequestMethod.GET)
+    public Page<JobCategoryResponse> getAllJobCategories(Pageable pageable) {
+        return jobCategoryService.getAllJobCategories(pageable);
+    }
 
     @RequestMapping(value = "/category/{categoryID}", method = RequestMethod.PUT)
     public JobCategoryResponse updateJobCategory(@PathVariable("categoryID") String categoryID, @RequestParam("categoryName") String categoryName) {

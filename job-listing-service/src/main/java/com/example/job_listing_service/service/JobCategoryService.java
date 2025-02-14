@@ -11,6 +11,8 @@ public interface JobCategoryService {
 
     JobCategoryResponse getJobCategory(String categoryName);
 
+    Page<JobCategoryResponse> getAllJobCategories(Pageable pageable);
+
     JobCategoryResponse updateJobCategory(String categoryID, String newCategoryName);
 
     void deleteJobCategory(String categoryName);

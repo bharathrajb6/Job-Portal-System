@@ -19,6 +19,8 @@ public interface JobCategoryRepository extends JpaRepository<JobCategory, String
 
     Optional<JobCategory> findByCategoryName(String categoryName);
 
+    Page<JobCategory> findAll(Pageable pageable);
+
     @Modifying
     @Transactional
     @Query("UPDATE JobCategory j set j.categoryName = ?1 where j.categoryID = ?2")
