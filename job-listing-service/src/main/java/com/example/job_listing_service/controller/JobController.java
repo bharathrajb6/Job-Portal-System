@@ -7,7 +7,6 @@ import com.example.job_listing_service.model.constants.JobState;
 import com.example.job_listing_service.model.constants.JobType;
 import com.example.job_listing_service.service.JobService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

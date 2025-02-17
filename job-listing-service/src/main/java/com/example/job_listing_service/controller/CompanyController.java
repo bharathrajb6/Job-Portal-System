@@ -4,7 +4,6 @@ import com.example.job_listing_service.dto.request.CompanyRequest;
 import com.example.job_listing_service.dto.response.CompanyResponse;
 import com.example.job_listing_service.service.CompanyService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

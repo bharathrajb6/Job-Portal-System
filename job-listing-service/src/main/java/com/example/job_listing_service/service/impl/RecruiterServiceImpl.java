@@ -9,7 +9,6 @@ import com.example.job_listing_service.model.Recruiters;
 import com.example.job_listing_service.persistance.CompanyDataPersistance;
 import com.example.job_listing_service.persistance.RecruiterDataPersistance;
 import com.example.job_listing_service.service.RecruiterService;
-import com.example.job_listing_service.service.UserService;
 import com.example.job_listing_service.validator.RecruiterValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import static com.example.job_listing_service.messages.recruiter.RecruiterMessages.INVALID_RECRUITER_REQUEST_DATA;
+import static com.example.job_listing_service.messages.recruiter.RecruiterMessages.RECRUITER_NOT_FOUND;
 import static com.example.job_listing_service.utils.CommonUtils.generateRandom;
+import static com.example.job_listing_service.utils.Constants.RECRUITER_KEY;
 
 @Service
 @Slf4j
@@ -28,7 +30,6 @@ public class RecruiterServiceImpl implements RecruiterService {
     private final RecruiterMapper recruiterMapper;
     private final RecruiterDataPersistance recruiterDataPersistance;
     private final CompanyDataPersistance companyDataPersistance;
-    private final UserService userService;
 
     /**
      * Add recruiter details to the database
@@ -44,7 +45,7 @@ public class RecruiterServiceImpl implements RecruiterService {
         Recruiters recruiters = recruiterMapper.toRecruiters(request);
         Company company = companyDataPersistance.getCompanyDetails(request.getCompanyName());
 
-        recruiters.setRecruiterID("REC" + generateRandom());
+        recruiters.setRecruiterID(RECRUITER_KEY + generateRandom());
         recruiters.setCompany(company);
 
         recruiterDataPersistance.saveRecruiterDetails(recruiters);
@@ -73,7 +74,7 @@ public class RecruiterServiceImpl implements RecruiterService {
     @Override
     public RecruiterResponse updateRecruiterDetails(String username, RecruiterRequest request) {
         if (request == null) {
-            throw new RecruiterException("Recruiter data cannot be null or empty");
+            throw new RecruiterException(INVALID_RECRUITER_REQUEST_DATA);
         }
         String companyName = request.getCompanyName();
         String position = request.getPosition();
@@ -81,7 +82,7 @@ public class RecruiterServiceImpl implements RecruiterService {
 
         boolean isRecruiterPresent = recruiterDataPersistance.isRecruiterPresent(username);
         if (!isRecruiterPresent) {
-            throw new RecruiterException("Recruiter not found with this username");
+            throw new RecruiterException(String.format(RECRUITER_NOT_FOUND, username));
         }
 
         Company company = companyDataPersistance.getCompanyDetails(companyName);

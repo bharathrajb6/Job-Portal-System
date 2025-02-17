@@ -6,6 +6,10 @@ import com.example.job_listing_service.exception.JobException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import static com.example.job_listing_service.messages.company.CompanyMessages.*;
+import static com.example.job_listing_service.utils.Constants.HTTPS_KEY;
+import static com.example.job_listing_service.utils.Constants.LOCATION_REGEX;
+
 @Component
 @Slf4j
 public class CompanyValidator {
@@ -17,43 +21,62 @@ public class CompanyValidator {
      */
     public void validateCompanyDetails(CompanyRequest companyRequest) {
 
+        // Check if company request is null
+        if (companyRequest == null) {
+            throw new CompanyException(INVALID_COMPANY_REQUEST_DATA);
+        }
+
         String companyName = companyRequest.getCompanyName();
         String website = companyRequest.getWebsite();
         String location = companyRequest.getLocation();
         String industry = companyRequest.getIndustry();
 
+        // Check if company name is null or empty
         if (companyName == null || companyName.trim().isEmpty()) {
-            log.warn("Company name cannot be null or empty");
-            throw new CompanyException("Company name cannot be null or empty");
+            log.warn(INVALID_COMPANY_NAME);
+            throw new CompanyException(INVALID_COMPANY_NAME);
         }
 
+        // Check if company name length is less than 2 or greater than 20
         if (companyName.length() < 2 || companyName.length() > 20) {
-            log.warn("Company name must be between 2 to 20 characters long");
-            throw new CompanyException("Company name must be between 2 to 20 characters long");
+            log.warn(INVALID_COMPANY_NAME_LENGTH);
+            throw new CompanyException(INVALID_COMPANY_NAME_LENGTH);
         }
 
+        // Check if website is null or empty
         if (website == null || website.trim().isEmpty()) {
-            throw new CompanyException("Website cannot be null or empty");
+            log.warn(INVALID_COMPANY_WEBSITE);
+            throw new CompanyException(INVALID_COMPANY_WEBSITE);
         }
 
+        // Check if website length is less than 5 or greater than 30
         if (website.length() < 5 || website.length() > 30) {
-            throw new CompanyException("Company website must be between 2 to 20 characters long");
+            log.warn(INVALID_COMPANY_WEBSITE_LENGTH);
+            throw new CompanyException(INVALID_COMPANY_WEBSITE_LENGTH);
         }
 
-        if (!website.startsWith("https://")) {
-            throw new CompanyException("Invalid company website URL");
+        // Check if website starts with https
+        if (!website.startsWith(HTTPS_KEY)) {
+            log.warn(INVALID_WEBSITE_URL_FORMAT);
+            throw new CompanyException(INVALID_WEBSITE_URL_FORMAT);
         }
 
+        // Check if location is null or empty
         if (location == null || location.trim().isEmpty()) {
-            throw new CompanyException("Location cannot be null or empty");
+            log.warn(INVALID_COMPANY_LOCATION);
+            throw new CompanyException(INVALID_COMPANY_LOCATION);
         }
 
-        if (!location.matches("^[A-Za-z\\s,]+$")) {
-            throw new JobException("Invalid location format");
+        // Check if location matches the location regex
+        if (!location.matches(LOCATION_REGEX)) {
+            log.warn(INVALID_COMPANY_LOCATION_FORMAT);
+            throw new JobException(INVALID_COMPANY_LOCATION_FORMAT);
         }
 
+        // Check if industry is null or empty
         if (industry == null || industry.trim().isEmpty()) {
-            throw new CompanyException("Industry cannot be null or empty");
+            log.warn(INVALID_COMPANY_INDUSTRY);
+            throw new CompanyException(INVALID_COMPANY_INDUSTRY);
         }
     }
 }

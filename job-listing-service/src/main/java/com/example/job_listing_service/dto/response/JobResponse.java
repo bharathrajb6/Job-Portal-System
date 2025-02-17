@@ -22,9 +22,9 @@ public class JobResponse {
     private String location;
     private JobType jobType;
     private ExperienceLevel experienceLevel;
-    private CompanyResponse company;
-    private RecruiterResponse recruiters;
-    private JobCategoryResponse category;
+    private String companyName;
+    private String recruitersName;
+    private String categoryName;
     private JobState jobState;
     private Timestamp postedAt;
 }

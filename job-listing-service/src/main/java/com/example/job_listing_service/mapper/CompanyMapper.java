@@ -14,10 +14,4 @@ import java.util.stream.Collectors;
 public interface CompanyMapper {
     Company toCompany(CompanyRequest companyRequest);
 
-    CompanyResponse toCompanyResponse(Company company);
-
-    default Page<CompanyResponse> toCompanyResponsePage(Page<Company> companyPage) {
-        List<CompanyResponse> companyResponses = companyPage.getContent().stream().map(this::toCompanyResponse).collect(Collectors.toList());
-        return new PageImpl<>(companyResponses, companyPage.getPageable(), companyPage.getTotalElements());
-    }
 }

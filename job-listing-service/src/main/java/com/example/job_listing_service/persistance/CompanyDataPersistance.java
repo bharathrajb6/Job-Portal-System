@@ -11,6 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.job_listing_service.messages.company.CompanyMessages.*;
+import static com.example.job_listing_service.utils.Constants.COMPANY_KEY;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -27,8 +30,10 @@ public class CompanyDataPersistance {
     public void saveCompany(Company company) {
         try {
             companyRepository.save(company);
+            log.info(COMPANY_DETAILS_SAVED);
         } catch (Exception exception) {
-            throw new CompanyException(exception.getMessage());
+            log.error(String.format(UNABLE_TO_SAVE_COMPANY_DETAILS, exception.getMessage()));
+            throw new CompanyException(String.format(UNABLE_TO_SAVE_COMPANY_DETAILS, exception.getMessage()));
         }
     }
 
@@ -39,10 +44,16 @@ public class CompanyDataPersistance {
      * @return
      */
     public Company getCompanyDetails(String key) {
-        if (key.startsWith("COM")) {
-            return companyRepository.findByCompanyID(key).orElseThrow(() -> new CompanyException("Company not found"));
+        if (key.startsWith(COMPANY_KEY)) {
+            return companyRepository.findByCompanyID(key).orElseThrow(() -> {
+                log.error(String.format(COMPANY_DETAILS_NOT_FOUND, key));
+                return new CompanyException(String.format(COMPANY_DETAILS_NOT_FOUND, key));
+            });
         }
-        return companyRepository.findByCompanyName(key).orElseThrow(() -> new CompanyException("Company not found"));
+        return companyRepository.findByCompanyName(key).orElseThrow(() -> {
+            log.error(String.format(COMPANY_DETAILS_NOT_FOUND, key));
+            return new CompanyException(String.format(COMPANY_DETAILS_NOT_FOUND, key));
+        });
     }
 
     /**
@@ -53,8 +64,10 @@ public class CompanyDataPersistance {
     public void updateCompanyDetails(Company company) {
         try {
             companyRepository.updateCompanyDetails(company.getCompanyName(), company.getWebsite(), company.getLocation(), company.getIndustry(), company.getCompanyID());
+            log.info(COMPANY_DETAILS_UPDATED);
         } catch (Exception exception) {
-            throw new CompanyException(exception.getMessage());
+            log.error(String.format(UNABLE_TO_UPDATE_COMPANY_DETAILS, exception.getMessage()));
+            throw new CompanyException(String.format(UNABLE_TO_UPDATE_COMPANY_DETAILS, exception.getMessage()));
         }
     }
 
@@ -66,8 +79,10 @@ public class CompanyDataPersistance {
     public void deleteCompany(Company company) {
         try {
             companyRepository.delete(company);
+            log.info(COMPANY_DETAILS_DELETED);
         } catch (Exception exception) {
-            throw new CompanyException(exception.getMessage());
+            log.error(String.format(UNABLE_TO_DELETE_COMPANY_DETAILS, exception.getMessage()));
+            throw new CompanyException(String.format(UNABLE_TO_DELETE_COMPANY_DETAILS, exception.getMessage()));
         }
     }
 

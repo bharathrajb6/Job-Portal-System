@@ -6,16 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CompanyResponse{
+public class CompanyResponse {
     private String companyID;
     private String companyName;
     private String website;
     private String industry;
     private String location;
     private Timestamp createdAt;
+    private List<JobResponse> jobs;
 }

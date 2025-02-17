@@ -13,16 +13,16 @@ import com.example.job_listing_service.model.constants.ExperienceLevel;
 import com.example.job_listing_service.model.constants.JobState;
 import com.example.job_listing_service.model.constants.JobType;
 import com.example.job_listing_service.persistance.CompanyDataPersistance;
-import com.example.job_listing_service.persistance.JobCategoryDataPersistance;
-import com.example.job_listing_service.persistance.JobDataPersistance;
+import com.example.job_listing_service.persistance.*;
 import com.example.job_listing_service.persistance.RecruiterDataPersistance;
-import com.example.job_listing_service.repo.JobRepository;
 import com.example.job_listing_service.service.JobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import static com.example.job_listing_service.messages.job.JobMessages.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +35,6 @@ public class JobServiceImpl implements JobService {
     private final JobCategoryDataPersistance jobCategoryDataPersistance;
     private final JobMapper jobMapper;
     private final JobHelper jobHelper;
-
     /**
      * Post a job to the system
      *
@@ -58,7 +57,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobResponse getJobDetails(String jobID) {
         Job job = jobDataPersistance.getJobDetailsById(jobID);
-        return jobMapper.toJobResponse(job);
+        return jobHelper.toJobResponse(job);
     }
 
     /**
@@ -72,7 +71,8 @@ public class JobServiceImpl implements JobService {
     public JobResponse updateJob(String jobID, JobRequest request) {
         boolean isJobPresent = jobDataPersistance.isJobPresent(jobID);
         if (!isJobPresent) {
-            throw new JobException("Job not found with ID");
+            log.error(String.format(JOB_NOT_FOUND_WITH_ID, jobID));
+            throw new JobException(String.format(JOB_NOT_FOUND_WITH_ID, jobID));
         }
 
         Company company = companyDataPersistance.getCompanyDetails(request.getCompanyName());
@@ -104,8 +104,10 @@ public class JobServiceImpl implements JobService {
         boolean isJobPresent = jobDataPersistance.isJobPresent(jobID);
         if (isJobPresent) {
             jobDataPersistance.deleteJobDetails(jobID);
+            log.info(JOB_DELETED_SUCCESSFULLY);
         } else {
-            throw new JobException("Job not found");
+            log.error(String.format(JOB_NOT_FOUND_WITH_ID, jobID));
+            throw new JobException(String.format(JOB_NOT_FOUND_WITH_ID, jobID));
         }
     }
 
@@ -120,7 +122,7 @@ public class JobServiceImpl implements JobService {
     public JobResponse updateJobStatus(String jobID, JobState state) {
         Job job = jobDataPersistance.getJobDetailsById(jobID);
         if (job.getJobState() == state) {
-            throw new JobException("Already it is in this state");
+            throw new JobException(ACTIVE_JOB_STATUS);
         }
         jobDataPersistance.updateJobStatus(state, jobID);
         return getJobDetails(jobID);
@@ -145,6 +147,6 @@ public class JobServiceImpl implements JobService {
             company = companyDataPersistance.getCompanyDetails(companyID);
         }
         Page<Job> jobs = jobDataPersistance.searchJobs(title, salary, location, jobType, experienceLevel, company, pageable);
-        return jobMapper.toJobResponsePage(jobs);
+        return jobHelper.toJobResponsePage(jobs);
     }
 }

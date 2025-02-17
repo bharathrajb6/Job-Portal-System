@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.job_listing_service.messages.recruiter.RecruiterMessages.*;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -28,8 +30,10 @@ public class RecruiterDataPersistance {
     public void saveRecruiterDetails(Recruiters recruiters) {
         try {
             recruiterRepository.save(recruiters);
+            log.info(RECRUITER_SAVED_SUCCESSFULLY);
         } catch (Exception exception) {
-            throw new RecruiterException(exception.getMessage());
+            log.error(String.format(UNABLE_TO_SAVE_RECRUITER_DETAILS, exception.getMessage()));
+            throw new RecruiterException(String.format(UNABLE_TO_SAVE_RECRUITER_DETAILS, exception.getMessage()));
         }
     }
 
@@ -40,7 +44,10 @@ public class RecruiterDataPersistance {
      * @return
      */
     public Recruiters getRecruiterDetails(String username) {
-        return recruiterRepository.findByUsername(username).orElseThrow(() -> new RecruiterException("Recruiter not found"));
+        return recruiterRepository.findByUsername(username).orElseThrow(() -> {
+            log.error(String.format(RECRUITER_NOT_FOUND, username));
+            return new RecruiterException(String.format(RECRUITER_NOT_FOUND, username));
+        });
     }
 
     /**
@@ -53,8 +60,10 @@ public class RecruiterDataPersistance {
     public void updateRecruiterDetails(Company company, String position, String username) {
         try {
             recruiterRepository.updateRecruiterDetails(company, position, username);
+            log.info(RECRUITER_UPDATED_SUCCESSFULLY);
         } catch (Exception exception) {
-            throw new RecruiterException(exception.getMessage());
+            log.error(String.format(UNABLE_TO_UPDATE_RECRUITER_DETAILS, exception.getMessage()));
+            throw new RecruiterException(String.format(UNABLE_TO_UPDATE_RECRUITER_DETAILS, exception.getMessage()));
         }
     }
 
@@ -66,8 +75,10 @@ public class RecruiterDataPersistance {
     public void deleteRecruiterDetails(Recruiters recruiters) {
         try {
             recruiterRepository.delete(recruiters);
+            log.info(RECRUITER_DELETED_SUCCESSFULLY);
         } catch (Exception exception) {
-            throw new RecruiterException(exception.getMessage());
+            log.error(String.format(UNABLE_TO_DELETE_RECRUITER_DETAILS, exception.getMessage()));
+            throw new RecruiterException(String.format(UNABLE_TO_DELETE_RECRUITER_DETAILS, exception.getMessage()));
         }
     }
 
