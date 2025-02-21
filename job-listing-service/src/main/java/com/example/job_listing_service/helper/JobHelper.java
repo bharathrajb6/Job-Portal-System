@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,12 @@ public class JobHelper {
         return job;
     }
 
-
+    /**
+     * Convert job to job response
+     *
+     * @param job
+     * @return
+     */
     public JobResponse toJobResponse(Job job) {
         JobResponse jobResponse = new JobResponse();
         jobResponse.setJobID(job.getJobID());
@@ -74,8 +80,27 @@ public class JobHelper {
         return jobResponse;
     }
 
+    /**
+     * Convert job page to job response page
+     *
+     * @param jobs
+     * @return
+     */
     public Page<JobResponse> toJobResponsePage(Page<Job> jobs) {
         List<JobResponse> jobResponses = jobs.stream().map(this::toJobResponse).collect(Collectors.toList());
         return new PageImpl<>(jobResponses, jobs.getPageable(), jobs.getTotalPages());
+    }
+
+
+    /**
+     * Check if the job posted date is within the time range
+     *
+     * @param startDate
+     * @param endDate
+     * @param jobPostedDate
+     * @return
+     */
+    public boolean isWithinTimeRange(LocalDate startDate, LocalDate endDate, LocalDate jobPostedDate) {
+        return startDate.equals(jobPostedDate) || endDate.equals(jobPostedDate) || (startDate.isBefore(jobPostedDate) && endDate.isAfter(jobPostedDate));
     }
 }

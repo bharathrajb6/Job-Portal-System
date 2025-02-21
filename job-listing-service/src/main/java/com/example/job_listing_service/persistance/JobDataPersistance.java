@@ -126,4 +126,14 @@ public class JobDataPersistance {
         log.info(JOB_SEARCH_BASED_ON_CRITERIA);
         return jobRepository.findAll(JobSpecification.getJobs(title, salary, location, jobType, experienceLevel, company), pageable);
     }
+
+    /**
+     * Searches the jobs based on the search criteria
+     *
+     * @param pageable
+     * @return
+     */
+    public Page<Job> searchJobs(Pageable pageable) {
+        return jobRepository.findAll(pageable);
+    }
 }

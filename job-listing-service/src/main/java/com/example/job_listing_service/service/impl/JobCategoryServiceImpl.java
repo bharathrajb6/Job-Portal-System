@@ -3,9 +3,10 @@ package com.example.job_listing_service.service.impl;
 import com.example.job_listing_service.dto.request.JobCategoryRequest;
 import com.example.job_listing_service.dto.response.JobCategoryResponse;
 import com.example.job_listing_service.exception.JobCategoryException;
+import com.example.job_listing_service.helper.JobCategoryHelper;
 import com.example.job_listing_service.mapper.JobCategoryMapper;
 import com.example.job_listing_service.model.JobCategory;
-import com.example.job_listing_service.persistance.*;
+import com.example.job_listing_service.persistance.JobCategoryDataPersistance;
 import com.example.job_listing_service.service.JobCategoryService;
 import com.example.job_listing_service.validator.JobCategoryValidator;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class JobCategoryServiceImpl implements JobCategoryService {
     private final JobCategoryDataPersistance jobCategoryDataPersistance;
     private final JobCategoryMapper jobCategoryMapper;
     private final JobCategoryValidator jobCategoryValidator;
+    private final JobCategoryHelper jobCategoryHelper;
 
     /**
      * Add a new job category to the database
@@ -53,7 +55,7 @@ public class JobCategoryServiceImpl implements JobCategoryService {
     @Override
     public JobCategoryResponse getJobCategory(String categoryName) {
         JobCategory jobCategory = jobCategoryDataPersistance.getJobCategory(categoryName);
-        return jobCategoryMapper.toJobCategoryResponse(jobCategory);
+        return jobCategoryHelper.toJobCategoryResponse(jobCategory);
     }
 
     /**
@@ -66,7 +68,7 @@ public class JobCategoryServiceImpl implements JobCategoryService {
     public Page<JobCategoryResponse> getAllJobCategories(Pageable pageable) {
         Page<JobCategory> jobCategories = jobCategoryDataPersistance.getAllJobCategories(pageable);
         log.info(JOB_CATEGORY_RETRIVED_SUCCESSFULLY);
-        return jobCategoryMapper.toJobCategoryPageResponse(jobCategories);
+        return jobCategoryHelper.toJobCategoryPageResponse(jobCategories);
     }
 
     /**
@@ -111,6 +113,6 @@ public class JobCategoryServiceImpl implements JobCategoryService {
     @Override
     public Page<JobCategoryResponse> searchCategory(String key, Pageable pageable) {
         Page<JobCategory> jobCategories = jobCategoryDataPersistance.searchJobCategory(key, pageable);
-        return jobCategoryMapper.toJobCategoryPageResponse(jobCategories);
+        return jobCategoryHelper.toJobCategoryPageResponse(jobCategories);
     }
 }

@@ -21,4 +21,6 @@ public interface JobService {
     JobResponse updateJobStatus(String jobID, JobState state);
 
     Page<JobResponse> searchJobs(String title, double salary, String location, JobType jobType, ExperienceLevel experienceLevel, String company, Pageable pageable);
+
+    Page<JobResponse> searchJobs(String startDate, String endDate, Pageable pageable);
 }
