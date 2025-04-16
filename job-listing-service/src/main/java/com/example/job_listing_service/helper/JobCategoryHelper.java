@@ -26,7 +26,8 @@ public class JobCategoryHelper {
         JobCategoryResponse jobCategoryResponse = new JobCategoryResponse();
         jobCategoryResponse.setCategoryID(jobCategory.getCategoryID());
         jobCategoryResponse.setCategoryName(jobCategory.getCategoryName());
-        jobCategoryResponse.setJobResponses(jobCategory.getJobs().stream().map(jobHelper::toJobResponse).collect(Collectors.toList()));
+        jobCategoryResponse.setJobResponses(
+                jobCategory.getJobs().stream().map(jobHelper::toJobResponse).collect(Collectors.toList()));
         return jobCategoryResponse;
     }
 
@@ -37,7 +38,8 @@ public class JobCategoryHelper {
      * @return
      */
     public Page<JobCategoryResponse> toJobCategoryPageResponse(Page<JobCategory> jobCategories) {
-        List<JobCategoryResponse> jobCategoryResponseList = jobCategories.getContent().stream().map(this::toJobCategoryResponse).collect(Collectors.toList());
+        List<JobCategoryResponse> jobCategoryResponseList =
+                jobCategories.getContent().stream().map(this::toJobCategoryResponse).collect(Collectors.toList());
         return new PageImpl<>(jobCategoryResponseList, jobCategories.getPageable(), jobCategories.getTotalPages());
     }
 }

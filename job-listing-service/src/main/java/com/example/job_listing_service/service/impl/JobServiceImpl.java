@@ -144,12 +144,14 @@ public class JobServiceImpl implements JobService {
      * @return
      */
     @Override
-    public Page<JobResponse> searchJobs(String title, double salary, String location, JobType jobType, ExperienceLevel experienceLevel, String companyID, Pageable pageable) {
+    public Page<JobResponse> searchJobs(String title, double salary, String location, JobType jobType,
+            ExperienceLevel experienceLevel, String companyID, Pageable pageable) {
         Company company = null;
         if (companyID != null) {
             company = companyDataPersistance.getCompanyDetails(companyID);
         }
-        Page<Job> jobs = jobDataPersistance.searchJobs(title, salary, location, jobType, experienceLevel, company, pageable);
+        Page<Job> jobs =
+                jobDataPersistance.searchJobs(title, salary, location, jobType, experienceLevel, company, pageable);
         return jobHelper.toJobResponsePage(jobs);
     }
 
@@ -173,7 +175,8 @@ public class JobServiceImpl implements JobService {
         }
         Page<Job> jobs = jobDataPersistance.searchJobs(pageable);
         for (Job job : jobs) {
-            boolean isValidJob = jobHelper.isWithinTimeRange(start, end, job.getPostedAt().toLocalDateTime().toLocalDate());
+            boolean isValidJob =
+                    jobHelper.isWithinTimeRange(start, end, job.getPostedAt().toLocalDateTime().toLocalDate());
             if (!isValidJob) {
                 jobs.getContent().remove(job);
             }

@@ -58,7 +58,8 @@ public class JobCategoryController {
      * @return
      */
     @RequestMapping(value = "/category/{categoryID}", method = RequestMethod.PUT)
-    public JobCategoryResponse updateJobCategory(@PathVariable("categoryID") String categoryID, @RequestParam("categoryName") String categoryName) {
+    public JobCategoryResponse updateJobCategory(@PathVariable("categoryID") String categoryID,
+            @RequestParam("categoryName") String categoryName) {
         return jobCategoryService.updateJobCategory(categoryID, categoryName);
     }
 

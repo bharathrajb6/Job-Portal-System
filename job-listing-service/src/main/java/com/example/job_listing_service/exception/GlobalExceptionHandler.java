@@ -17,7 +17,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(CompanyException.class)
     public ResponseEntity<?> handleCompanyException(CompanyException companyException) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Company Error", companyException.getMessage());
+        ErrorResponse errorResponse =
+                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Company Error", companyException.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -29,7 +30,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(RecruiterException.class)
     public ResponseEntity<?> handleRecruiterException(RecruiterException recruiterException) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Recruiter Error", recruiterException.getMessage());
+        ErrorResponse errorResponse =
+                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Recruiter Error", recruiterException.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -41,7 +43,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(JobCategoryException.class)
     public ResponseEntity<?> handleJobCategoryException(JobCategoryException jobCategoryException) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Job Category Error", jobCategoryException.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Job Category Error",
+                jobCategoryException.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -53,7 +56,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(JobException.class)
     public ResponseEntity<?> handleJobException(JobException jobException) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Job Error", jobException.getMessage());
+        ErrorResponse errorResponse =
+                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Job Error", jobException.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

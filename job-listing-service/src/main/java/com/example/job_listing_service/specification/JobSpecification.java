@@ -10,7 +10,6 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class JobSpecification {
 
     /**
@@ -24,7 +23,8 @@ public class JobSpecification {
      * @param company
      * @return
      */
-    public static Specification<Job> getJobs(String title, double salary, String location, JobType jobType, ExperienceLevel experienceLevel, Company company) {
+    public static Specification<Job> getJobs(String title, double salary, String location, JobType jobType,
+            ExperienceLevel experienceLevel, Company company) {
         return (root, query, criteriaBuilder) -> {
 
             List<Predicate> predicates = new ArrayList<>();

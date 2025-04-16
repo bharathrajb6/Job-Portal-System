@@ -63,7 +63,8 @@ public class CompanyDataPersistance {
      */
     public void updateCompanyDetails(Company company) {
         try {
-            companyRepository.updateCompanyDetails(company.getCompanyName(), company.getWebsite(), company.getLocation(), company.getIndustry(), company.getCompanyID());
+            companyRepository.updateCompanyDetails(company.getCompanyName(), company.getWebsite(),
+                    company.getLocation(), company.getIndustry(), company.getCompanyID());
             log.info(COMPANY_DETAILS_UPDATED);
         } catch (Exception exception) {
             log.error(String.format(UNABLE_TO_UPDATE_COMPANY_DETAILS, exception.getMessage()));

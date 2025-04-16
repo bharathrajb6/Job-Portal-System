@@ -50,7 +50,8 @@ public class JobController {
      * @return
      */
     @RequestMapping(value = "/job/{jobID}", method = RequestMethod.PUT)
-    public JobResponse updateJobDetails(@PathVariable(value = "jobID") String jobID, @RequestBody JobRequest jobRequest) {
+    public JobResponse updateJobDetails(@PathVariable(value = "jobID") String jobID,
+            @RequestBody JobRequest jobRequest) {
         return jobService.updateJob(jobID, jobRequest);
     }
 
@@ -74,7 +75,8 @@ public class JobController {
      * @return
      */
     @RequestMapping(value = "/job/{jobID}/status", method = RequestMethod.PUT)
-    public JobResponse updateJobStatus(@PathVariable(value = "jobID") String jobID, @RequestParam(name = "state") JobState jobState) {
+    public JobResponse updateJobStatus(@PathVariable(value = "jobID") String jobID,
+            @RequestParam(name = "state") JobState jobState) {
         return jobService.updateJobStatus(jobID, jobState);
     }
 
@@ -91,7 +93,12 @@ public class JobController {
      * @return
      */
     @RequestMapping(value = "/job/search", method = RequestMethod.GET)
-    public Page<JobResponse> searchJobs(@RequestParam(value = "title", required = false) String title, @RequestParam(value = "salary", required = false) double salary, @RequestParam(value = "location", required = false) String location, @RequestParam(value = "jobType", required = false) JobType jobType, @RequestParam(value = "experience", required = false) ExperienceLevel experienceLevel, @RequestParam(value = "company", required = false) String company, Pageable pageable) {
+    public Page<JobResponse> searchJobs(@RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "salary", required = false) double salary,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "jobType", required = false) JobType jobType,
+            @RequestParam(value = "experience", required = false) ExperienceLevel experienceLevel,
+            @RequestParam(value = "company", required = false) String company, Pageable pageable) {
         return jobService.searchJobs(title, salary, location, jobType, experienceLevel, company, pageable);
     }
 }

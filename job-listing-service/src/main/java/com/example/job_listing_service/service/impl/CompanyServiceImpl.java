@@ -115,7 +115,8 @@ public class CompanyServiceImpl implements CompanyService {
      * @return
      */
     @Override
-    public Page<CompanyResponse> searchCompany(String companyName, String location, String industry, Pageable pageable) {
+    public Page<CompanyResponse> searchCompany(String companyName, String location, String industry,
+            Pageable pageable) {
         Page<Company> companies = companyDataPersistance.searchCompanies(companyName, location, industry, pageable);
         log.info(COMPANY_RETRIVED_SUCCESSFULLY_BASED_ON_SEARCH);
         return companyHelper.toCompanyResponsePage(companies);

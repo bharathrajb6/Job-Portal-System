@@ -1,6 +1,5 @@
 package com.example.job_listing_service.persistance;
 
-
 import com.example.job_listing_service.exception.JobException;
 import com.example.job_listing_service.model.Company;
 import com.example.job_listing_service.model.Job;
@@ -61,7 +60,9 @@ public class JobDataPersistance {
      */
     public void updateJobDetails(Job job) {
         try {
-            jobRepository.updateJobDetails(job.getTitle(), job.getDescription(), job.getSalary(), job.getLocation(), job.getJobType(), job.getExperienceLevel(), job.getCompany(), job.getRecruiters(), job.getCategory(), job.getJobID());
+            jobRepository.updateJobDetails(job.getTitle(), job.getDescription(), job.getSalary(), job.getLocation(),
+                    job.getJobType(), job.getExperienceLevel(), job.getCompany(), job.getRecruiters(),
+                    job.getCategory(), job.getJobID());
             log.info(JOB_UPDATED_SUCCESSFULLY);
         } catch (Exception exception) {
             log.error(String.format(UNABLE_TO_UPDATE_JOB_DETAILS, exception.getMessage()));
@@ -122,9 +123,11 @@ public class JobDataPersistance {
      * @param pageable
      * @return
      */
-    public Page<Job> searchJobs(String title, double salary, String location, JobType jobType, ExperienceLevel experienceLevel, Company company, Pageable pageable) {
+    public Page<Job> searchJobs(String title, double salary, String location, JobType jobType,
+            ExperienceLevel experienceLevel, Company company, Pageable pageable) {
         log.info(JOB_SEARCH_BASED_ON_CRITERIA);
-        return jobRepository.findAll(JobSpecification.getJobs(title, salary, location, jobType, experienceLevel, company), pageable);
+        return jobRepository.findAll(
+                JobSpecification.getJobs(title, salary, location, jobType, experienceLevel, company), pageable);
     }
 
     /**

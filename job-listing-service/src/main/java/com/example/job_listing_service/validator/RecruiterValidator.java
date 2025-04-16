@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import static com.example.job_listing_service.messages.recruiter.RecruiterMessages.*;
 
-
 @Component
 @RequiredArgsConstructor
 @Slf4j

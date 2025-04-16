@@ -91,7 +91,6 @@ public class JobHelper {
         return new PageImpl<>(jobResponses, jobs.getPageable(), jobs.getTotalPages());
     }
 
-
     /**
      * Check if the job posted date is within the time range
      *
@@ -101,6 +100,7 @@ public class JobHelper {
      * @return
      */
     public boolean isWithinTimeRange(LocalDate startDate, LocalDate endDate, LocalDate jobPostedDate) {
-        return startDate.equals(jobPostedDate) || endDate.equals(jobPostedDate) || (startDate.isBefore(jobPostedDate) && endDate.isAfter(jobPostedDate));
+        return startDate.equals(jobPostedDate) || endDate.equals(jobPostedDate) || (startDate.isBefore(
+                jobPostedDate) && endDate.isAfter(jobPostedDate));
     }
 }

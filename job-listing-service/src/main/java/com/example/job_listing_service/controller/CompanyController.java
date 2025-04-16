@@ -58,7 +58,8 @@ public class CompanyController {
      * @return
      */
     @RequestMapping(value = "/company/{companyName}", method = RequestMethod.PUT)
-    public CompanyResponse updateCompanyDetails(@PathVariable("companyName") String companyName, @RequestBody CompanyRequest companyRequest) {
+    public CompanyResponse updateCompanyDetails(@PathVariable("companyName") String companyName,
+            @RequestBody CompanyRequest companyRequest) {
         return companyService.updateCompanyDetails(companyName, companyRequest);
     }
 
@@ -84,10 +85,10 @@ public class CompanyController {
      * @return
      */
     @RequestMapping(value = "/company/filter", method = RequestMethod.GET)
-    public Page<CompanyResponse> searchCompany(@RequestParam(value = "companyName", required = false) String companyName,
-                                               @RequestParam(value = "location", required = false) String location,
-                                               @RequestParam(value = "industry", required = false) String industry,
-                                               Pageable pageable) {
+    public Page<CompanyResponse> searchCompany(
+            @RequestParam(value = "companyName", required = false) String companyName,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "industry", required = false) String industry, Pageable pageable) {
         return companyService.searchCompany(companyName, location, industry, pageable);
     }
 

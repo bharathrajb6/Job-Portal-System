@@ -27,14 +27,15 @@ public class CompanyHelper {
         companyResponse.setLocation(company.getLocation());
         companyResponse.setCreatedAt(company.getCreatedAt());
 
-        List<JobResponse> jobResponseList = company.getJobs().stream().map(jobHelper::toJobResponse).collect(Collectors.toList());
+        List<JobResponse> jobResponseList =
+                company.getJobs().stream().map(jobHelper::toJobResponse).collect(Collectors.toList());
         companyResponse.setJobs(jobResponseList);
         return companyResponse;
     }
 
-
     public Page<CompanyResponse> toCompanyResponsePage(Page<Company> companies) {
-        List<CompanyResponse> companyResponses = companies.getContent().stream().map(this::toCompanyResponse).collect(Collectors.toList());
+        List<CompanyResponse> companyResponses =
+                companies.getContent().stream().map(this::toCompanyResponse).collect(Collectors.toList());
         return new PageImpl<>(companyResponses, companies.getPageable(), companies.getTotalPages());
     }
 }
