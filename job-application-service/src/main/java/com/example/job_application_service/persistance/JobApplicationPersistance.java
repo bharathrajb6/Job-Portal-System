@@ -77,4 +77,19 @@ public class JobApplicationPersistance {
             throw new JobApplicationException(exception.getMessage());
         }
     }
+
+    /**
+     * Retrieves all job applications for a specific job.
+     *
+     * @param jobID
+     * @param pageable
+     * @return
+     */
+    public Page<JobApplication> getAllApplicationsForJob(String jobID, Pageable pageable) {
+        try {
+            return jobApplicationRepository.getAllApplicationBasedOnJobID(jobID, pageable);
+        } catch (Exception exception) {
+            throw new JobApplicationException(exception.getMessage());
+        }
+    }
 }

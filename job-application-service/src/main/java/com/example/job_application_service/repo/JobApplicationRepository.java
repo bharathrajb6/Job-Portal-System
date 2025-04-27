@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Repository
 public interface JobApplicationRepository extends JpaRepository<JobApplication, String> {
 
@@ -34,4 +36,23 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
     @Query("SELECT j FROM JobApplication j WHERE j.applicantID = ?1")
     Page<JobApplication> getAllAppliedJobs(String username, Pageable pageable);
 
+    /**
+     * Method to get all the job applications for a given job
+     *
+     * @param jobID
+     * @param pageable
+     * @return
+     */
+    @Query("SELECT j from JobApplication j where j.jobID = ?1")
+    Page<JobApplication> getAllApplicationBasedOnJobID(String jobID, Pageable pageable);
+
+    /**
+     * Method to check if a user has already applied for a job
+     *
+     * @param username
+     * @param jobID
+     * @return
+     */
+    @Query("SELECT j from JobApplication j where j.applicantID = ?1 and j.jobID = ?2")
+    Optional<JobApplication> isAlreadyApplied(String username, String jobID);
 }

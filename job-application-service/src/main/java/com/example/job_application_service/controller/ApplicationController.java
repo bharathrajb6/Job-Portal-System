@@ -55,8 +55,8 @@ public class ApplicationController {
      * @param pageable
      * @return
      */
-    @RequestMapping(value = "/appliedJobs", method = RequestMethod.GET)
-    public Page<JobApplicationResponse> getAllAppliedJobs(@RequestParam("username") String username,
+    @RequestMapping(value = "/{username}/appliedJobs", method = RequestMethod.GET)
+    public Page<JobApplicationResponse> getAllAppliedJobs(@PathVariable(value = "username") String username,
             Pageable pageable) {
         return jobApplicationService.getAllAppliedJobs(username, pageable);
     }
@@ -72,5 +72,17 @@ public class ApplicationController {
     public JobApplicationResponse updateJobApplicationStatus(@PathVariable("applicationID") String applicationID,
             @RequestParam("status") String status) {
         return jobApplicationService.updateApplicationStatus(applicationID, status);
+    }
+
+    /**
+     * This method is used to get all the applications for a job used for recruiter.
+     *
+     * @param jobID
+     * @param pageable
+     * @return
+     */
+    @RequestMapping(value = "job/{id}", method = RequestMethod.GET)
+    public Page<JobApplicationResponse> getAllApplicationsForJobID(String jobID, Pageable pageable) {
+        return jobApplicationService.getAllApplicationsForJob(jobID, pageable);
     }
 }
