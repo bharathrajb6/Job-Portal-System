@@ -55,4 +55,14 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
      */
     @Query("SELECT j from JobApplication j where j.applicantID = ?1 and j.jobID = ?2")
     Optional<JobApplication> isAlreadyApplied(String username, String jobID);
+
+    /**
+     * Method to get all the job applications for a given user and status
+     *
+     * @param jobID
+     * @param status
+     * @return
+     */
+    @Query("SELECT j from JobApplication j where j.jobID = ?1 and j.status = ?2")
+    Page<JobApplication> getApplicationsForJobByStatus(String jobID, ApplicationStatus status);
 }

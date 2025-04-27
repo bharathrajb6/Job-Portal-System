@@ -18,4 +18,9 @@ public interface JobApplicationService {
     JobApplicationResponse updateApplicationStatus(String applicationID, String status);
 
     Page<JobApplicationResponse> getAllApplicationsForJob(String jobID, Pageable pageable);
+
+    Page<JobApplicationResponse> getAllApplicationForJobByStatus(String jobID, String status);
+
+    Page<JobApplicationResponse> getAllApplicationsForJobByDate(String jobID, String startDate, String lastDate,
+            Pageable pageable);
 }

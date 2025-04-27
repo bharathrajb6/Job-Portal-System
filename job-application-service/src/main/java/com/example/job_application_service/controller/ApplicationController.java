@@ -56,7 +56,7 @@ public class ApplicationController {
      * @return
      */
     @RequestMapping(value = "/{username}/appliedJobs", method = RequestMethod.GET)
-    public Page<JobApplicationResponse> getAllAppliedJobs(@PathVariable(value = "username") String username,
+    public Page<JobApplicationResponse> getAllAppliedJobs(@PathVariable("username") String username,
             Pageable pageable) {
         return jobApplicationService.getAllAppliedJobs(username, pageable);
     }
@@ -81,8 +81,37 @@ public class ApplicationController {
      * @param pageable
      * @return
      */
-    @RequestMapping(value = "job/{id}", method = RequestMethod.GET)
-    public Page<JobApplicationResponse> getAllApplicationsForJobID(String jobID, Pageable pageable) {
+    @RequestMapping(value = "/job/{jobID}", method = RequestMethod.GET)
+    public Page<JobApplicationResponse> getAllApplicationsForJobID(@PathVariable("jobID") String jobID,
+            Pageable pageable) {
         return jobApplicationService.getAllApplicationsForJob(jobID, pageable);
+    }
+
+    /**
+     * This method is used to get all the applications for a job by status.
+     *
+     * @param jobID
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = "{jobID}/status/{status}", method = RequestMethod.GET)
+    public Page<JobApplicationResponse> getAllApplicationForJobByStatus(@PathVariable("jobID") String jobID,
+            @PathVariable("status") String status) {
+        return jobApplicationService.getAllApplicationForJobByStatus(jobID, status);
+    }
+
+    /**
+     * This method is used to get all the applications for a job by date.
+     *
+     * @param jobID
+     * @param startDate
+     * @param lastDate
+     * @param pageable
+     * @return
+     */
+    public Page<JobApplicationResponse> getAllApplicationsByDate(@PathVariable(value = "jobID") String jobID,
+            @RequestParam(name = "startDate") String startDate, @RequestParam(name = "lastDate") String lastDate,
+            Pageable pageable) {
+        return jobApplicationService.getAllApplicationsForJobByDate(jobID, startDate, lastDate, pageable);
     }
 }

@@ -5,6 +5,7 @@ import com.example.job_application_service.dto.response.JobApplicationResponse;
 import com.example.job_application_service.dto.response.JobResponse;
 import com.example.job_application_service.dto.response.constants.JobState;
 import com.example.job_application_service.exceptions.JobApplicationException;
+import com.example.job_application_service.helpers.ApplicationHelper;
 import com.example.job_application_service.mapper.JobApplicationMapper;
 import com.example.job_application_service.model.ApplicationStatus;
 import com.example.job_application_service.model.JobApplication;
@@ -19,6 +20,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+
 import static com.example.job_application_service.utils.CommonUtils.generateRandom;
 
 @Service
@@ -30,6 +34,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     private final JobApplicationMapper jobApplicationMapper;
     private final JobService jobService;
     private final ApplicationValidator applicationValidator;
+    private final ApplicationHelper applicationHelper;
 
     /**
      * This method is used to apply for a job
@@ -116,6 +121,52 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     @Override
     public Page<JobApplicationResponse> getAllApplicationsForJob(String jobID, Pageable pageable) {
         Page<JobApplication> jobApplications = jobApplicationPersistance.getAllApplicationsForJob(jobID, pageable);
+        return jobApplicationMapper.toJobApplicationResponsePage(jobApplications);
+    }
+
+    /**
+     * This method is used to get all applications for a job by status.
+     *
+     * @param jobID
+     * @param status
+     * @return
+     */
+    @Override
+    public Page<JobApplicationResponse> getAllApplicationForJobByStatus(String jobID, String status) {
+        ApplicationStatus applicationStatus = ApplicationStatus.valueOf(status);
+        Page<JobApplication> applications =
+                jobApplicationPersistance.getAllApplicationForJobByStatus(jobID, applicationStatus);
+        return jobApplicationMapper.toJobApplicationResponsePage(applications);
+    }
+
+    /**
+     * This method is used to get all applications for a job by date.
+     *
+     * @param jobID
+     * @param startDate
+     * @param lastDate
+     * @param pageable
+     * @return
+     */
+    @Override
+    public Page<JobApplicationResponse> getAllApplicationsForJobByDate(String jobID, String startDate, String lastDate,
+            Pageable pageable) {
+        LocalDate start, end;
+        try {
+            start = LocalDate.parse(startDate);
+            end = LocalDate.parse(lastDate);
+        } catch (DateTimeParseException exception) {
+            throw new JobApplicationException(exception.getMessage());
+        }
+        Page<JobApplication> jobApplications =
+                jobApplicationPersistance.getAllApplicationForJobByStatus(jobID, ApplicationStatus.APPLIED);
+        for (JobApplication jobApplication : jobApplications) {
+            boolean isWithinRange = applicationHelper.isJobWithinRange(start, end,
+                    jobApplication.getAppliedAt().toLocalDateTime().toLocalDate());
+            if (!isWithinRange) {
+                jobApplications.getContent().remove(jobApplication);
+            }
+        }
         return jobApplicationMapper.toJobApplicationResponsePage(jobApplications);
     }
 

@@ -92,4 +92,19 @@ public class JobApplicationPersistance {
             throw new JobApplicationException(exception.getMessage());
         }
     }
+
+    /**
+     * Retrieves all job applications for a specific job by status.
+     *
+     * @param jobID
+     * @param status
+     * @return
+     */
+    public Page<JobApplication> getAllApplicationForJobByStatus(String jobID, ApplicationStatus status) {
+        try {
+            return jobApplicationRepository.getApplicationsForJobByStatus(jobID, status);
+        } catch (Exception exception) {
+            throw new JobApplicationException(exception.getMessage());
+        }
+    }
 }
